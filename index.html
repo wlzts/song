@@ -685,7 +685,7 @@
   </footer>
 
   <!-- 音频元素 -->
-  <audio id="audio">
+  <audio id="audio"></audio>
 
   <!-- 鼠标跟随元素 -->
   <div class="mouse-follow" id="mouseFollow"></div>
@@ -815,6 +815,30 @@
         requestAnimationFrame(animateFollow);
       }
       animateFollow();
+    }
+
+    /* ========== 恢复初始上传区域界面（核心修复） ========== */
+    function restoreDropZoneUI() {
+      // 完全恢复初始界面结构
+      dropZone.innerHTML = `
+        <h3>加载GitHub模板文件</h3>
+        <p class="feedback warning" id="templateTip">正在重新检测模板文件...</p>
+        <!-- 模板选择器动态生成 -->
+        <div class="template-selector" id="templateSelector"></div>
+        <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc"/>
+        <div class="btn-group" style="justify-content: center; margin-top: 2rem;">
+          <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">自定义上传文件</button>
+          <button class="minimal-btn" onclick="showTemplateInfo()">模板命名规则</button>
+        </div>
+      `;
+      // 重新绑定DOM元素
+      templateTip = document.getElementById('templateTip');
+      templateSelector = document.getElementById('fileInput').nextElementSibling;
+      fileInput = document.getElementById('fileInput');
+      // 重新绑定文件选择事件
+      fileInput.addEventListener('change', e => handleFiles(e.target.files));
+      // 重新检测模板
+      checkAllTemplates();
     }
 
     /* ========== GitHub模板文件检测 ========== */
@@ -1222,7 +1246,7 @@
       setTimeout(() => feedback.textContent = '', 2000);
     }
 
-    /* ========== 模板说明弹窗 ========== */
+    /* ========== 模板说明弹窗（修复返回逻辑） ========== */
     function showTemplateInfo() {
       const templateInfo = `
         <h3>GitHub模板文件命名规则</h3>
@@ -1237,7 +1261,7 @@
           <p style="margin-bottom: 0.8rem; color: #ff9800;">⚠️ 注意：音频仅支持MP3，歌词必须为标准LRC格式，且一一对应</p>
           <p style="color: #aaaaaa;">💡 提示：删除/替换仓库中的模板文件，页面刷新后将自动更新</p>
         </div>
-        <button class="minimal-btn" onclick="checkAllTemplates()">返回并重新检测</button>
+        <button class="minimal-btn" onclick="restoreDropZoneUI()">返回并重新检测</button>
       `;
       dropZone.innerHTML = templateInfo;
     }
