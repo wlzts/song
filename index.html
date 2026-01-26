@@ -398,6 +398,9 @@
     .feedback.incorrect {
       color: #f44336;
     }
+    .feedback.warning {
+      color: #ff9800;
+    }
     
     /* 字符级高亮 */
     .char-highlight {
@@ -493,6 +496,33 @@
       0%, 100% { height: 5px; }
       50% { height: 30px; }
     }
+    /* 模板选择器 */
+    .template-selector {
+      margin: 1rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
+    }
+    .template-btn {
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+    }
+    .template-btn.active {
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.05);
+    }
+    .template-btn:hover {
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
   </style>
 </head>
 <body>
@@ -531,7 +561,7 @@
     </div>
     <div class="hero-content">
       <h1>Lyric<span class="typing" id="typing-text">Type</span></h1>
-      <p>极简歌词学习体验</p>
+      <p>极简歌词学习体验 · GitHub模板自动加载</p>
     </div>
   </section>
 
@@ -542,18 +572,18 @@
       <div class="minimal-grid">
         <div class="feature-card hover-scale fade-in">
           <div class="feature-icon">🎵</div>
-          <h3>极简界面</h3>
-          <p>专注于内容本身，去除一切干扰元素，让您沉浸在音乐与文字的纯粹体验中。</p>
+          <h3>GitHub模板自动识别</h3>
+          <p>上传指定命名的音频和歌词文件，页面自动识别加载，无需手动配置。</p>
         </div>
         <div class="feature-card hover-scale fade-in">
           <div class="feature-icon">⚡</div>
-          <h3>流畅交互</h3>
-          <p>精心设计的微交互和动画效果，提供自然流畅的用户体验，让学习过程更加愉悦。</p>
+          <h3>字符级实时验证</h3>
+          <p>逐字检测输入正确性，实时高亮反馈，精准提升歌词拼写能力。</p>
         </div>
         <div class="feature-card hover-scale fade-in">
           <div class="feature-icon">📱</div>
-          <h3>响应式设计</h3>
-          <p>完美适配各种设备尺寸，从手机到桌面，随时随地享受一致的优质体验。</p>
+          <h3>全端适配</h3>
+          <p>完美适配手机、平板、桌面设备，随时随地享受流畅的学习体验。</p>
         </div>
       </div>
     </div>
@@ -564,12 +594,17 @@
     <div class="container">
       <h2 class="section-title fade-in">开始体验</h2>
       <div class="experience-content">
-        <!-- 文件上传区域 -->
+        <!-- 文件上传/模板加载区域 -->
         <div id="dropZone" class="upload-area">
-          <h3>上传音频和歌词</h3>
-          <p>支持 MP3、WAV 等音频格式和 LRC 歌词文件</p>
+          <h3>加载GitHub模板文件</h3>
+          <p class="feedback warning" id="templateTip">正在检测模板文件...</p>
+          <!-- 模板选择器动态生成 -->
+          <div class="template-selector" id="templateSelector"></div>
           <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc"/>
-          <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">选择文件</button>
+          <div class="btn-group" style="justify-content: center; margin-top: 2rem;">
+            <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">自定义上传文件</button>
+            <button class="minimal-btn" onclick="showTemplateInfo()">模板命名规则</button>
+          </div>
         </div>
         
         <!-- 进度条 -->
@@ -579,13 +614,13 @@
         
         <!-- 歌词显示区域 -->
         <div class="lyric-display">
-          <div class="lyric-text" id="lyricBox">等待文件上传...</div>
+          <div class="lyric-text" id="lyricBox">等待模板加载/文件上传...</div>
           <div class="lyric-translation" id="transBox"></div>
         </div>
         
         <!-- 输入区域 -->
         <div class="input-area">
-          <div class="relative">
+          <div style="position: relative;">
             <input 
               type="text" 
               id="inputBox" 
@@ -635,7 +670,7 @@
         <div class="fade-in">
           <h3>技术特色</h3>
           <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.8;">
-            采用现代前端技术栈，支持离线缓存、实时音频处理和个性化学习体验，让学习更加高效。
+            适配GitHub Pages部署，支持模板文件自动识别、离线缓存、实时音频处理，让歌词学习更高效。
           </p>
         </div>
       </div>
@@ -645,12 +680,12 @@
   <!-- 页脚 -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2024 LyricType. 极简歌词学习体验</p>
+      <p>LyricType · 极简歌词学习体验 · GitHub模板自动加载</p>
     </div>
   </footer>
 
   <!-- 音频元素 -->
-  <audio id="audio"></audio>
+  <audio id="audio">
 
   <!-- 鼠标跟随元素 -->
   <div class="mouse-follow" id="mouseFollow"></div>
@@ -661,68 +696,16 @@
           AUDIO_STORE = 'audio', 
           LRC_STORE = 'lrc', 
           TIME_STORE = 'time';
+    // 模板文件配置 - 5个模板
+    const TEMPLATE_COUNT = 5;
+    const TEMPLATE_PREFIX = 'lyrictype-template';
+    // 获取当前GitHub Pages根地址（自动适配，无需手动修改）
+    const BASE_URL = window.location.origin + window.location.pathname.replace(/[^/]+$/, '');
     
     let db, audioURL = '', lrcData = [], timeOffset = {};
     let currentIndex = 0;
-    let isPlaying = false;
-    
-    /* ========== 内置歌曲配置 ========== */
-    const BUILTIN_SONGS = [
-      {
-        id: 'row-row',
-        name: 'Row Row Row Your Boat',
-        audioUrl: 'https://github.com/ashleymcnamara/gophers/raw/master/RowRowRowYourBoat.mp3',
-        lrc: `[00:01.00]Row, row, row your boat|划，划，划你的船
-[00:04.00]Gently down the stream|轻轻地顺流而下
-[00:07.00]Merrily, merrily, merrily, merrily|愉快地，愉快地，愉快地，愉快地
-[00:10.00]Life is but a dream|生活不过是一场梦
-[00:13.00]Row, row, row your boat|划，划，划你的船
-[00:16.00]Gently down the stream|轻轻地顺流而下
-[00:19.00]Merrily, merrily, merrily, merrily|愉快地，愉快地，愉快地，愉快地
-[00:22.00]Life is but a dream|生活不过是一场梦`
-      },
-      {
-        id: 'twinkle',
-        name: 'Twinkle Twinkle Little Star',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-        lrc: `[00:01.00]Twinkle, twinkle, little star|一闪一闪小星星
-[00:04.00]How I wonder what you are|我想知道你是什么
-[00:07.00]Up above the world so high|高高挂在世界之上
-[00:10.00]Like a diamond in the sky|像天空中的钻石
-[00:13.00]Twinkle, twinkle, little star|一闪一闪小星星
-[00:16.00]How I wonder what you are|我想知道你是什么`
-      },
-      {
-        id: 'happy-birthday',
-        name: 'Happy Birthday',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-        lrc: `[00:01.00]Happy birthday to you|祝你生日快乐
-[00:04.00]Happy birthday to you|祝你生日快乐
-[00:07.00]Happy birthday dear friend|生日快乐，亲爱的朋友
-[00:10.00]Happy birthday to you|祝你生日快乐`
-      },
-      {
-        id: 'jingle-bells',
-        name: 'Jingle Bells',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-        lrc: `[00:01.00]Jingle bells, jingle bells|铃儿响叮当，铃儿响叮当
-[00:04.00]Jingle all the way|一路响叮当
-[00:07.00]Oh what fun it is to ride|骑着雪橇多快乐
-[00:10.00]In a one horse open sleigh|在一匹马拉的雪橇上`
-      },
-      {
-        id: 'amazing-grace',
-        name: 'Amazing Grace',
-        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-        lrc: `[00:01.00]Amazing grace, how sweet the sound|奇异恩典，多么甜美的声音
-[00:04.00]That saved a wretch like me|拯救了我这样的罪人
-[00:07.00]I once was lost but now am found|我曾迷失，但现在找到了方向
-[00:10.00]Was blind but now I see|曾经盲目，现在我看见了`
-      }
-    ];
-    
-    // 默认歌曲
-    const DEFAULT_SONG = BUILTIN_SONGS[0];
+    let currentTemplate = 1; // 当前选中的模板编号
+    let templateExists = new Array(TEMPLATE_COUNT + 1).fill(false); // 标记模板是否存在
 
     /* ========== DOM 元素 ========== */
     const dropZone = document.getElementById('dropZone');
@@ -733,6 +716,7 @@
     const clearBtn = document.getElementById('clearBtn');
     const inputBox = document.getElementById('inputBox');
     const feedback = document.getElementById('feedback');
+    const templateTip = document.getElementById('templateTip');
     const lyricBox = document.getElementById('lyricBox');
     const transBox = document.getElementById('transBox');
     const progressContainer = document.getElementById('progressContainer');
@@ -742,24 +726,26 @@
     const tuneControls = document.getElementById('tuneControls');
     const typingText = document.getElementById('typing-text');
     const mouseFollow = document.getElementById('mouseFollow');
+    const templateSelector = document.getElementById('templateSelector');
 
     /* ========== IndexedDB 初始化 ========== */
     const req = indexedDB.open(DB_NAME, 1);
-    
     req.onupgradeneeded = () => {
       db = req.result;
       if (!db.objectStoreNames.contains(AUDIO_STORE)) db.createObjectStore(AUDIO_STORE);
       if (!db.objectStoreNames.contains(LRC_STORE)) db.createObjectStore(LRC_STORE);
       if (!db.objectStoreNames.contains(TIME_STORE)) db.createObjectStore(TIME_STORE);
     };
-    
     req.onsuccess = () => {
       db = req.result;
       loadFromDB();
+      // 初始化完成后检测GitHub模板文件
+      checkAllTemplates();
     };
-    
     req.onerror = () => {
       console.error('IndexedDB 打开失败');
+      templateTip.textContent = '缓存初始化失败，将检测GitHub模板';
+      checkAllTemplates();
     };
 
     /* ========== 打字效果 ========== */
@@ -767,10 +753,8 @@
       let wordIndex = 0;
       let charIndex = 0;
       let isDeleting = false;
-    
       function type() {
         const currentWord = words[wordIndex];
-      
         if (isDeleting) {
           element.textContent = currentWord.substring(0, charIndex - 1);
           charIndex--;
@@ -778,7 +762,6 @@
           element.textContent = currentWord.substring(0, charIndex + 1);
           charIndex++;
         }
-      
         if (!isDeleting && charIndex === currentWord.length) {
           isDeleting = true;
           setTimeout(type, pauseTime);
@@ -790,17 +773,13 @@
           setTimeout(type, isDeleting ? typingSpeed/2 : typingSpeed);
         }
       }
-    
       type();
     }
+    typingEffect(typingText, ['Type', 'Learn', 'Practice', 'Enjoy'], 100, 2000);
 
-    // 启动打字效果
-    typingEffect(typingText, ['Type', 'Learn', 'Create', 'Enjoy'], 100, 2000);
-
-    /* ========== 文字渐入效果 ========== */
+    /* ========== 页面动效初始化 ========== */
     function setupFadeIn() {
       const fadeElements = document.querySelectorAll('.fade-in');
-      
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -808,81 +787,166 @@
             observer.unobserve(entry.target);
           }
         });
-      }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      });
-      
+      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
       fadeElements.forEach(el => observer.observe(el));
     }
-
-    /* ========== 视差滚动 ========== */
     function setupParallax() {
       const parallaxBg = document.querySelector('.parallax-bg');
-      
       window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
         const rate = scrolled * -0.5;
-        
-        if (parallaxBg) {
-          parallaxBg.style.transform = `translateY(${rate}px)`;
-        }
+        if (parallaxBg) parallaxBg.style.transform = `translateY(${rate}px)`;
       });
     }
-
-    /* ========== 鼠标跟随效果 ========== */
     function setupMouseFollow() {
       let mouseX = 0, mouseY = 0;
       let trailX = 0, trailY = 0;
-      
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
         mouseFollow.style.opacity = '0.7';
       });
-      
       function animateFollow() {
         const speed = 0.1;
         trailX += (mouseX - trailX) * speed;
         trailY += (mouseY - trailY) * speed;
-        
         mouseFollow.style.left = `${trailX - 50}px`;
         mouseFollow.style.top = `${trailY - 50}px`;
-        
         requestAnimationFrame(animateFollow);
       }
-      
       animateFollow();
     }
 
-    /* ========== 文件处理 ========== */
-    fileInput.addEventListener('change', e => handleFiles(e.target.files));
+    /* ========== GitHub模板文件检测 ========== */
+    // 检测单个模板是否存在
+    async function checkTemplate(templateNum) {
+      const lrcUrl = `${BASE_URL}${TEMPLATE_PREFIX}${templateNum}.lrc`;
+      const mp3Url = `${BASE_URL}${TEMPLATE_PREFIX}${templateNum}.mp3`;
+      try {
+        // 同时检测lrc和mp3文件
+        const [lrcRes, mp3Res] = await Promise.all([
+          fetch(lrcUrl, { method: 'HEAD' }),
+          fetch(mp3Url, { method: 'HEAD' })
+        ]);
+        return lrcRes.ok && mp3Res.ok;
+      } catch (err) {
+        return false;
+      }
+    }
+    // 检测所有模板并生成选择器
+    async function checkAllTemplates() {
+      templateTip.textContent = '正在检测模板文件，请稍候...';
+      // 批量检测5个模板
+      for (let i = 1; i <= TEMPLATE_COUNT; i++) {
+        templateExists[i] = await checkTemplate(i);
+      }
+      // 生成模板选择按钮
+      generateTemplateSelector();
+      // 统计存在的模板数量
+      const existCount = templateExists.filter(Boolean).length;
+      if (existCount === 0) {
+        templateTip.textContent = '未检测到任何模板文件，请按规则上传或自定义上传';
+        templateTip.className = 'feedback warning';
+      } else {
+        templateTip.textContent = `检测到${existCount}个有效模板，点击选择`;
+        templateTip.className = 'feedback correct';
+        // 自动加载第一个存在的模板
+        const firstTemplate = templateExists.findIndex(v => v === true);
+        if (firstTemplate > 0) {
+          loadTemplate(firstTemplate);
+        }
+      }
+    }
+    // 生成模板选择器按钮
+    function generateTemplateSelector() {
+      templateSelector.innerHTML = '';
+      for (let i = 1; i <= TEMPLATE_COUNT; i++) {
+        const btn = document.createElement('button');
+        btn.className = `template-btn ${templateExists[i] ? '' : 'disabled'}`;
+        btn.textContent = `模板${i}`;
+        btn.disabled = !templateExists[i];
+        btn.onclick = () => {
+          document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          loadTemplate(i);
+        };
+        templateSelector.appendChild(btn);
+      }
+    }
+    // 加载指定编号的GitHub模板
+    function loadTemplate(templateNum) {
+      if (!templateExists[templateNum]) return;
+      currentTemplate = templateNum;
+      lyricBox.innerHTML = '<div class="loading"></div>';
+      transBox.textContent = '';
+      startBtn.disabled = true;
+      exportBtn.disabled = true;
+      
+      const lrcUrl = `${BASE_URL}${TEMPLATE_PREFIX}${templateNum}.lrc`;
+      const mp3Url = `${BASE_URL}${TEMPLATE_PREFIX}${templateNum}.mp3`;
+      
+      // 加载歌词和音频
+      fetch(lrcUrl)
+        .then(res => {
+          if (!res.ok) throw new Error('歌词文件加载失败');
+          return res.text();
+        })
+        .then(lrcText => {
+          // 解析LRC歌词
+          lrcData = [];
+          const re = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/g;
+          let m;
+          while ((m = re.exec(lrcText)) !== null) {
+            const t = parseInt(m[1]) * 60 + parseInt(m[2]) + parseInt(m[3].padEnd(3, '0')) / 1000;
+            const [en, zh = ''] = m[4].trim().split('|').map(s => s.trim());
+            lrcData.push({ time: t, en, zh });
+          }
+          if (!lrcData.length) throw new Error('未解析到有效歌词');
+          
+          // 设置音频
+          audioURL = mp3Url;
+          audioEl.src = audioURL;
+          
+          // 更新界面
+          dropZone.querySelector('h3').textContent = `已加载 GitHub 模板${templateNum}`;
+          lyricBox.textContent = lrcData[0].en;
+          transBox.textContent = lrcData[0].zh;
+          startBtn.disabled = false;
+          exportBtn.disabled = false;
+          feedback.textContent = `模板${templateNum}加载成功，可开始练习`;
+          feedback.className = 'feedback correct';
+          
+          // 保存到缓存
+          saveToDB(lrcText, mp3Url);
+        })
+        .catch(err => {
+          console.error('模板加载失败:', err);
+          lyricBox.textContent = `模板${templateNum}加载失败`;
+          feedback.textContent = `错误：${err.message}`;
+          feedback.className = 'feedback incorrect';
+        });
+    }
 
-    // 拖拽功能
+    /* ========== 文件处理 - 自定义上传 ========== */
+    fileInput.addEventListener('change', e => handleFiles(e.target.files));
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => {
       dropZone.addEventListener(ev, e => {
         e.preventDefault();
         e.stopPropagation();
       });
     });
-
     dropZone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
-
     function handleFiles(files) {
       let audio = null, lrc = null;
-      
       [...files].forEach(f => {
         if (f.type.startsWith('audio/')) audio = f;
         if (f.name.toLowerCase().endsWith('.lrc')) lrc = f;
       });
-      
       if (!audio || !lrc) {
-        alert('请同时选择音频与 .lrc 文件');
+        alert('请同时选择音频文件（MP3/WAV）和歌词文件（LRC）');
         return;
       }
-      
       lyricBox.innerHTML = '<div class="loading"></div>';
-      
       Promise.all([
         new Promise(res => {
           const r = new FileReader();
@@ -899,167 +963,111 @@
         lrcData = [];
         const re = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/g;
         let m;
-        
         while ((m = re.exec(lrcText)) !== null) {
           const t = parseInt(m[1]) * 60 + parseInt(m[2]) + parseInt(m[3].padEnd(3, '0')) / 1000;
           const [en, zh = ''] = m[4].trim().split('|').map(s => s.trim());
           lrcData.push({ time: t, en, zh });
         }
-        
         if (!lrcData.length) {
-          alert('未解析到歌词');
+          alert('未从LRC文件中解析到歌词');
           lyricBox.textContent = '未解析到歌词';
           return;
         }
-        
-        // 存储到数据库
+        // 存储到数据库并更新界面
         const tx = db.transaction([AUDIO_STORE, LRC_STORE, TIME_STORE], 'readwrite');
         tx.objectStore(AUDIO_STORE).put(audioBuf, 'audio');
         tx.objectStore(LRC_STORE).put(lrcText, 'lrc');
         tx.objectStore(TIME_STORE).clear();
-        
         tx.oncomplete = () => {
           audioURL = URL.createObjectURL(new Blob([audioBuf], { type: audio.type }));
           audioEl.src = audioURL;
-          
-          dropZone.innerHTML = `
-            <h3>文件已上传</h3>
-            <p>${audio.name}</p>
-            <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">重新选择</button>
-          `;
-          
+          dropZone.querySelector('h3').textContent = '自定义文件已上传';
+          templateTip.textContent = `当前使用：${audio.name} + ${lrc.name}`;
+          templateTip.className = 'feedback correct';
           startBtn.disabled = false;
           exportBtn.disabled = false;
-          showLyric();
+          lyricBox.textContent = lrcData[0].en;
+          transBox.textContent = lrcData[0].zh;
         };
       });
     }
 
-    /* ========== 加载离线数据 ========== */
+    /* ========== 缓存操作 - 保存/加载/清除 ========== */
+    function saveToDB(lrcText, audioUrl) {
+      if (!db) return;
+      const tx = db.transaction([AUDIO_STORE, LRC_STORE], 'readwrite');
+      tx.objectStore(LRC_STORE).put(lrcText, 'audio');
+      tx.objectStore(AUDIO_STORE).put(audioUrl, 'lrc');
+      tx.oncomplete = () => console.log('当前模板已保存到缓存');
+    }
     function loadFromDB() {
       const tx = db.transaction([AUDIO_STORE, LRC_STORE, TIME_STORE], 'readonly');
       const audioGet = tx.objectStore(AUDIO_STORE).get('audio');
       const lrcGet = tx.objectStore(LRC_STORE).get('lrc');
       const offGet = tx.objectStore(TIME_STORE).getAll();
-      
       tx.oncomplete = () => {
         if (audioGet.result && lrcGet.result) {
           // 解析歌词
           lrcData = [];
           const re = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/g;
           let m;
-          
           while ((m = re.exec(lrcGet.result)) !== null) {
             const t = parseInt(m[1]) * 60 + parseInt(m[2]) + parseInt(m[3].padEnd(3, '0')) / 1000;
             const [en, zh = ''] = m[4].trim().split('|').map(s => s.trim());
             lrcData.push({ time: t, en, zh });
           }
-          
           // 加载时间微调
           offGet.result.forEach(o => timeOffset[o.key] = o.val);
-          
-          audioURL = URL.createObjectURL(new Blob([audioGet.result]));
+          // 设置音频和界面
+          audioURL = audioGet.result;
           audioEl.src = audioURL;
-          
-          dropZone.innerHTML = `
-            <h3>已从缓存加载</h3>
-            <p>点击开始练习</p>
-            <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">更换文件</button>
-          `;
-          
+          templateTip.textContent = '已从本地缓存加载上次使用的内容';
+          templateTip.className = 'feedback correct';
           startBtn.disabled = false;
           exportBtn.disabled = false;
-          showLyric();
+          if (lrcData.length > 0) {
+            lyricBox.textContent = lrcData[0].en;
+            transBox.textContent = lrcData[0].zh;
+          }
         }
       };
     }
-
-    /* ========== 时间轴微调 ========== */
-    function shiftTime(delta) {
-      const key = currentIndex;
-      timeOffset[key] = (timeOffset[key] || 0) + delta;
-      
-      // 保存到数据库
-      const tx = db.transaction(TIME_STORE, 'readwrite');
-      tx.objectStore(TIME_STORE).put(timeOffset[key], key);
-      
-      feedback.textContent = `时间调整: ${delta > 0 ? '+' : ''}${delta}s`;
-      setTimeout(() => {
-        feedback.textContent = '';
-      }, 2000);
-    }
-
-    /* ========== 清除缓存 ========== */
     function clearDB() {
+      if (!db) {
+        feedback.textContent = '缓存未初始化，无需清除';
+        feedback.className = 'feedback warning';
+        setTimeout(() => feedback.textContent = '', 2000);
+        return;
+      }
       const tx = db.transaction([AUDIO_STORE, LRC_STORE, TIME_STORE], 'readwrite');
       [AUDIO_STORE, LRC_STORE, TIME_STORE].forEach(s => tx.objectStore(s).clear());
-      
       tx.oncomplete = () => {
         audioURL = '';
         lrcData = [];
         timeOffset = {};
         currentIndex = 0;
-        
         startBtn.disabled = true;
         pauseBtn.disabled = true;
         exportBtn.disabled = true;
         inputBox.disabled = true;
-        
         lyricBox.textContent = '缓存已清除';
         transBox.textContent = '';
-        dropZone.innerHTML = `
-          <h3>上传音频和歌词</h3>
-          <p>支持 MP3、WAV 等音频格式和 LRC 歌词文件</p>
-          <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc"/>
-          <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">选择文件</button>
-        `;
-        
-        // 重新绑定文件输入事件
-        document.getElementById('fileInput').addEventListener('change', e => handleFiles(e.target.files));
-        
+        templateTip.textContent = '缓存已清除，重新检测GitHub模板';
+        templateTip.className = 'feedback warning';
         progressContainer.style.display = 'none';
         tuneControls.style.display = 'none';
         audioEl.src = '';
+        // 重新检测模板
+        checkAllTemplates();
       };
     }
 
-    /* ========== 导出歌词 ========== */
-    function exportLyrics() {
-      if (lrcData.length === 0) return;
-      
-      let lrcContent = '';
-      lrcData.forEach((line, index) => {
-        const offset = timeOffset[index] || 0;
-        const adjustedTime = line.time + offset;
-        const minutes = Math.floor(adjustedTime / 60);
-        const seconds = Math.floor(adjustedTime % 60);
-        const milliseconds = Math.floor((adjustedTime % 1) * 1000);
-        const timeStr = `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}]`;
-        lrcContent += `${timeStr}${line.en}|${line.zh}\n`;
-      });
-      
-      const blob = new Blob([lrcContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'exported-lyrics.lrc';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      feedback.textContent = '歌词已导出';
-      setTimeout(() => {
-        feedback.textContent = '';
-      }, 2000);
-    }
-
-    /* ========== 游戏流程 ========== */
+    /* ========== 歌词练习核心逻辑 ========== */
     startBtn.onclick = startGame;
     pauseBtn.onclick = pauseGame;
     exportBtn.onclick = exportLyrics;
     clearBtn.onclick = clearDB;
-
+    // 开始练习
     function startGame() {
       currentIndex = 0;
       inputBox.disabled = false;
@@ -1071,25 +1079,26 @@
       progressContainer.style.display = 'block';
       updateProgress();
       showLyric();
+      inputBox.focus();
     }
-
+    // 暂停练习
     function pauseGame() {
       audioEl.pause();
       inputBox.disabled = true;
       startBtn.disabled = false;
       pauseBtn.disabled = true;
     }
-
+    // 更新进度条
     function updateProgress() {
       if (lrcData.length > 0) {
         const progress = (currentIndex / lrcData.length) * 100;
         progressBar.style.width = progress + '%';
       }
     }
-
+    // 显示当前歌词
     function showLyric() {
       if (currentIndex >= lrcData.length) {
-        lyricBox.textContent = '🎉 完成！';
+        lyricBox.textContent = '🎉 练习完成！';
         transBox.textContent = '';
         inputBox.disabled = true;
         tuneControls.style.display = 'none';
@@ -1099,63 +1108,53 @@
         highlightLayer.innerHTML = '';
         return;
       }
-      
       const line = lrcData[currentIndex];
       lyricBox.textContent = line.en;
       transBox.textContent = line.zh;
       inputBox.focus();
-      
-      // 初始化高亮层
       updateCharHighlight('', line.en);
     }
-
+    // 字符级实时高亮
     inputBox.addEventListener('input', function() {
       const user = this.value;
       const correct = lrcData[currentIndex].en;
-      
-      // 实时字符级验证和高亮
       updateCharHighlight(user, correct);
-      
+      // 验证输入
       if (user.toLowerCase() === correct.toLowerCase()) {
         feedback.textContent = '✓ 正确';
         feedback.className = 'feedback correct';
-        
+        // 播放对应音频片段
         const t = lrcData[currentIndex].time + (timeOffset[currentIndex] || 0);
         playSegment(t);
-        
+        // 切换下一句
         currentIndex++;
         updateProgress();
         this.value = '';
         highlightLayer.innerHTML = '';
-        
         setTimeout(() => {
           feedback.textContent = '';
           feedback.className = 'feedback';
           showLyric();
         }, 1800);
       } else if (user.length > correct.length) {
-        feedback.textContent = '✗ 错误，请重试';
+        feedback.textContent = '✗ 输入过长，请重试';
         feedback.className = 'feedback incorrect';
         this.value = '';
         highlightLayer.innerHTML = '';
-        
         setTimeout(() => {
           feedback.textContent = '';
           feedback.className = 'feedback';
         }, 2000);
       }
     });
-    
+    // 更新字符高亮
     function updateCharHighlight(user, correct) {
       let html = '';
       const maxLength = Math.max(user.length, correct.length);
-      
       for (let i = 0; i < maxLength; i++) {
         const userChar = user[i] || '';
         const correctChar = correct[i] || '';
-        
         let className = 'char-highlight';
-        
         if (i < user.length) {
           if (userChar.toLowerCase() === correctChar.toLowerCase() || (userChar === ':' && correctChar === ':') || (userChar === '：' && correctChar === '：')) {
             className += ' char-correct';
@@ -1165,160 +1164,89 @@
         } else {
           className += ' char-pending';
         }
-        
         html += `<span class="${className}">${correctChar}</span>`;
       }
-      
       highlightLayer.innerHTML = html;
     }
-
+    // 播放音频片段
     function playSegment(start) {
       audioEl.currentTime = Math.max(0, start);
       audioEl.play();
       setTimeout(() => audioEl.pause(), 3500);
     }
-
-    /* ========== 加载内置歌曲 ========== */
-    function loadBuiltinSong(song = DEFAULT_SONG) {
-      lyricBox.innerHTML = '<div class="loading"></div>';
-      
+    // 时间微调
+    function shiftTime(delta) {
+      const key = currentIndex;
+      timeOffset[key] = (timeOffset[key] || 0) + delta;
+      // 保存到数据库
+      if (db) {
+        const tx = db.transaction(TIME_STORE, 'readwrite');
+        tx.objectStore(TIME_STORE).put(timeOffset[key], key);
+      }
+      feedback.textContent = `时间调整: ${delta > 0 ? '+' : ''}${delta}s`;
+      feedback.className = 'feedback correct';
       setTimeout(() => {
-        try {
-          // 解析歌词
-          lrcData = [];
-          const re = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/g;
-          let m;
-          
-          while ((m = re.exec(song.lrc)) !== null) {
-            const t = parseInt(m[1]) * 60 + parseInt(m[2]) + parseInt(m[3].padEnd(3, '0')) / 1000;
-            const [en, zh = ''] = m[4].trim().split('|').map(s => s.trim());
-            lrcData.push({ time: t, en, zh });
-          }
-          
-          if (!lrcData.length) {
-            throw new Error('未解析到歌词');
-          }
-          
-          // 设置音频
-          audioURL = song.audioUrl;
-          audioEl.src = audioURL;
-          
-          // 更新界面
-          dropZone.innerHTML = `
-            <h3>内置歌曲已加载</h3>
-            <p>${song.name}</p>
-            <div class="btn-group" style="margin-top: 1rem; justify-content: center;">
-              <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">上传文件</button>
-              <button class="minimal-btn" onclick="showSongSelector()">选择歌曲</button>
-              <button class="minimal-btn" onclick="showTemplateInfo()">模板说明</button>
-            </div>
-          `;
-          
-          startBtn.disabled = false;
-          exportBtn.disabled = false;
-          showLyric();
-          
-        } catch (error) {
-          console.error('加载内置歌曲失败:', error);
-          lyricBox.textContent = '歌曲加载失败';
-          
-          // 显示默认的上传界面
-          dropZone.innerHTML = `
-            <h3>上传音频和歌词</h3>
-            <p>支持 MP3、WAV 等音频格式和 LRC 歌词文件</p>
-            <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc"/>
-            <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">选择文件</button>
-          `;
-          
-          // 重新绑定文件输入事件
-          document.getElementById('fileInput').addEventListener('change', e => handleFiles(e.target.files));
-        }
-      }, 500);
+        feedback.textContent = '';
+        feedback.className = 'feedback';
+      }, 2000);
     }
-    
-    /* ========== 显示歌曲选择器 ========== */
-    function showSongSelector() {
-      let html = `
-        <h3>选择内置歌曲</h3>
-        <div style="max-height: 300px; overflow-y: auto; margin: 2rem 0;">
-      `;
-      
-      BUILTIN_SONGS.forEach((song, index) => {
-        html += `
-          <div style="padding: 1rem; border: 1px solid var(--border-color); margin-bottom: 1rem; cursor: pointer; transition: all 0.3s ease;" 
-               onclick="loadBuiltinSong(BUILTIN_SONGS[${index}])"
-               onmouseenter="this.style.backgroundColor='rgba(255,255,255,0.05)'"
-               onmouseleave="this.style.backgroundColor='transparent'">
-            <h4 style="margin: 0; font-weight: 400;">${song.name}</h4>
-            <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary); font-size: 0.9rem;">
-              点击选择此歌曲
-            </p>
-          </div>
-        `;
+    // 导出歌词
+    function exportLyrics() {
+      if (lrcData.length === 0) {
+        feedback.textContent = '无歌词可导出';
+        feedback.className = 'feedback warning';
+        setTimeout(() => feedback.textContent = '', 2000);
+        return;
+      }
+      let lrcContent = '';
+      lrcData.forEach((line, index) => {
+        const offset = timeOffset[index] || 0;
+        const adjustedTime = line.time + offset;
+        const minutes = Math.floor(adjustedTime / 60);
+        const seconds = Math.floor(adjustedTime % 60);
+        const milliseconds = Math.floor((adjustedTime % 1) * 1000);
+        const timeStr = `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}]`;
+        lrcContent += `${timeStr}${line.en}|${line.zh}\n`;
       });
-      
-      html += `
-        </div>
-        <button class="minimal-btn" onclick="loadBuiltinSong()">返回默认</button>
-      `;
-      
-      dropZone.innerHTML = html;
+      const blob = new Blob([lrcContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `lyrictype-export-${new Date().getTime()}.lrc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      feedback.textContent = '歌词已导出';
+      feedback.className = 'feedback correct';
+      setTimeout(() => feedback.textContent = '', 2000);
     }
-    
-    /* ========== 显示模板信息 ========== */
+
+    /* ========== 模板说明弹窗 ========== */
     function showTemplateInfo() {
       const templateInfo = `
-        <h3>歌曲模板说明</h3>
-        <div style="text-align: left; max-height: 300px; overflow-y: auto; margin: 2rem 0; padding: 1rem; border: 1px solid var(--border-color);">
-          <p style="margin-bottom: 1rem;"><strong>模板文件命名规则：</strong></p>
-          <p style="margin-bottom: 0.5rem;">1. 音频文件：lyrictype-template1.mp3 到 lyrictype-template5.mp3</p>
-          <p style="margin-bottom: 0.5rem;">2. 歌词文件：lyrictype-template1.lrc 到 lyrictype-template5.lrc</p>
-          <br>
-          <p style="margin-bottom: 1rem;"><strong>推荐歌曲：</strong></p>
-          <p style="margin-bottom: 0.5rem;">• Row Row Row Your Boat</p>
-          <p style="margin-bottom: 0.5rem;">• Twinkle Twinkle Little Star</p>
-          <p style="margin-bottom: 0.5rem;">• Happy Birthday</p>
-          <p style="margin-bottom: 0.5rem;">• Jingle Bells</p>
-          <p style="margin-bottom: 0.5rem;">• Amazing Grace</p>
-          <br>
-          <p style="margin-bottom: 1rem;"><strong>使用方法：</strong></p>
-          <p style="margin-bottom: 0.5rem;">1. 将音频和歌词文件按上述命名规则重命名</p>
-          <p style="margin-bottom: 0.5rem;">2. 上传到您的代码仓库根目录</p>
-          <p style="margin-bottom: 0.5rem;">3. 应用将自动识别并加载这些文件</p>
+        <h3>GitHub模板文件命名规则</h3>
+        <div style="text-align: left; max-height: 300px; overflow-y: auto; margin: 2rem 0; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 4px;">
+          <p style="margin-bottom: 1.5rem; font-weight: 500;">将以下文件上传到GitHub仓库<strong>根目录</strong>，页面将自动识别：</p>
+          <p style="margin-bottom: 0.8rem;">📌 模板1：lyrictype-template1.mp3 + lyrictype-template1.lrc</p>
+          <p style="margin-bottom: 0.8rem;">📌 模板2：lyrictype-template2.mp3 + lyrictype-template2.lrc</p>
+          <p style="margin-bottom: 0.8rem;">📌 模板3：lyrictype-template3.mp3 + lyrictype-template3.lrc</p>
+          <p style="margin-bottom: 0.8rem;">📌 模板4：lyrictype-template4.mp3 + lyrictype-template4.lrc</p>
+          <p style="margin-bottom: 1.5rem;">📌 模板5：lyrictype-template5.mp3 + lyrictype-template5.lrc</p>
+          <p style="margin-bottom: 0.8rem; color: #4CAF50;">✅ LRC歌词格式：[00:01.00]英文歌词|中文翻译</p>
+          <p style="margin-bottom: 0.8rem; color: #ff9800;">⚠️ 注意：音频仅支持MP3，歌词必须为标准LRC格式，且一一对应</p>
+          <p style="color: #aaaaaa;">💡 提示：删除/替换仓库中的模板文件，页面刷新后将自动更新</p>
         </div>
-        <button class="minimal-btn" onclick="loadBuiltinSong()">返回</button>
+        <button class="minimal-btn" onclick="checkAllTemplates()">返回并重新检测</button>
       `;
-      
       dropZone.innerHTML = templateInfo;
     }
-    
-    /* ========== 初始化 ========== */
+
+    /* ========== 页面初始化 ========== */
     document.addEventListener('DOMContentLoaded', () => {
       setupFadeIn();
       setupParallax();
       setupMouseFollow();
-      
-      // 尝试加载缓存，如果没有缓存则加载内置歌曲
-      const req = indexedDB.open(DB_NAME, 1);
-      req.onsuccess = () => {
-        db = req.result;
-        const tx = db.transaction([AUDIO_STORE, LRC_STORE], 'readonly');
-        const audioGet = tx.objectStore(AUDIO_STORE).get('audio');
-        const lrcGet = tx.objectStore(LRC_STORE).get('lrc');
-        
-        tx.oncomplete = () => {
-          if (audioGet.result && lrcGet.result) {
-            loadFromDB();
-          } else {
-            loadBuiltinSong();
-          }
-        };
-      };
-      
-      req.onerror = () => {
-        // 如果数据库打开失败，直接加载内置歌曲
-        loadBuiltinSong();
-      };
     });
   </script>
 </body>
