@@ -3,9 +3,20 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>LyricType - 黑色极简</title>
+  <title>LyricType - 简奢音乐学习体验</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+    :root {
+      --primary-gold: #d4af37;
+      --dark-bg: #0a0a0a;
+      --dark-surface: #111111;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+    }
     
     * {
       margin: 0;
@@ -13,100 +24,230 @@
       box-sizing: border-box;
     }
     
-    :root {
-      --bg-primary: #000000;
-      --bg-secondary: #111111;
-      --text-primary: #ffffff;
-      --text-secondary: #aaaaaa;
-      --text-tertiary: #666666;
-      --accent: #ffffff;
-      --border-color: #333333;
-    }
-    
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-primary);
+      font-family: 'Inter', sans-serif;
+      background: var(--dark-bg);
       color: var(--text-primary);
-      line-height: 1.6;
       overflow-x: hidden;
+      line-height: 1.6;
     }
     
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
+    .luxury-font {
+      font-family: 'Playfair Display', serif;
     }
     
-    /* 极简布局 */
-    .minimal-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 3rem;
-    }
-    
-    /* 打字效果 */
-    .typing {
+    /* 质感文字效果 */
+    .premium-text {
       position: relative;
+      color: var(--primary-gold);
     }
     
-    .typing::after {
-      content: '|';
+    .premium-text::after {
+      content: attr(data-text);
       position: absolute;
-      right: -10px;
-      animation: blink 1s infinite;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg, 
+        transparent 0%, 
+        rgba(212, 175, 55, 0.4) 50%, 
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      background-position: 100% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 3s infinite;
     }
     
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
+    @keyframes shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
     }
     
-    /* 文字渐入效果 */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.8s ease;
+    /* 灵动岛 */
+    .dynamic-island-container {
+      position: fixed;
+      bottom: 2rem;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 1000;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    /* 视差滚动 */
-    .parallax-section {
-      position: relative;
-      height: 100vh;
+    .dynamic-island {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      background: rgba(66, 66, 66, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 200px;
+    }
+    
+    .island-text {
+      color: var(--text-primary);
+      margin-right: 0.75rem;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .island-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-gold);
+      color: var(--dark-bg);
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+    }
+    
+    /* 滚动转场效果 */
+    .transition-container {
+      position: relative;
+      height: 300vh;
+    }
+    
+    .transition-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
       overflow: hidden;
     }
     
-    .parallax-bg {
+    .transition-image {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
-      transition: transform 0.1s ease-out;
+      object-fit: cover;
+      object-position: left;
+      transition: width 0.3s ease;
     }
     
-    /* 悬停效果 */
-    .hover-scale {
-      transition: transform 0.3s ease;
+    .transition-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--primary-gold);
+      z-index: 10;
+      transition: left 0.3s ease;
     }
     
-    .hover-scale:hover {
-      transform: scale(1.02);
+    /* 固定与滚动混合布局 */
+    .fixed-scroll-layout {
+      display: flex;
+      min-height: 300vh;
     }
     
-    .hover-opacity {
+    .scroll-content {
+      width: 50%;
+      padding: 2rem;
+    }
+    
+    .fixed-content {
+      width: 50%;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .fixed-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    
+    .fixed-image.active {
+      opacity: 1;
+    }
+    
+    /* 全屏抽屉式详情 */
+    .drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      visibility: hidden;
+    }
+    
+    .drawer-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      opacity: 0;
       transition: opacity 0.3s ease;
     }
     
-    .hover-opacity:hover {
-      opacity: 0.8;
+    .drawer-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 90vh;
+      background: var(--dark-surface);
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+      transform: translateY(100%);
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border-top: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .drawer.active .drawer-backdrop {
+      opacity: 1;
+    }
+    
+    .drawer.active .drawer-content {
+      transform: translateY(0);
+    }
+    
+    .drawer.active {
+      visibility: visible;
+    }
+    
+    .drawer-close {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+    
+    .drawer-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    
+    .drawer-scroll {
+      height: 100%;
+      overflow-y: auto;
+      padding: 3rem 2rem 2rem;
     }
     
     /* 导航栏 */
@@ -116,9 +257,14 @@
       left: 0;
       right: 0;
       z-index: 100;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(10, 10, 10, 0.9);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar.scrolled {
+      padding: 0.5rem 0;
     }
     
     .nav-content {
@@ -126,12 +272,15 @@
       justify-content: space-between;
       align-items: center;
       padding: 1.5rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
     }
     
     .logo {
       font-size: 1.5rem;
-      font-weight: 300;
-      letter-spacing: 1px;
+      font-weight: 600;
+      color: var(--primary-gold);
+      font-family: 'Playfair Display', serif;
     }
     
     .nav-links {
@@ -144,11 +293,11 @@
       color: var(--text-secondary);
       text-decoration: none;
       transition: color 0.3s ease;
-      font-weight: 300;
+      font-weight: 400;
     }
     
     .nav-links a:hover {
-      color: var(--text-primary);
+      color: var(--primary-gold);
     }
     
     /* 英雄区域 */
@@ -157,283 +306,269 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
       position: relative;
+      overflow: hidden;
     }
     
-    .hero-content h1 {
-      font-size: clamp(3rem, 8vw, 8rem);
-      font-weight: 100;
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+      z-index: -1;
+    }
+    
+    .hero-content {
+      text-align: center;
+      max-width: 800px;
+      padding: 0 2rem;
+    }
+    
+    .hero-title {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
       margin-bottom: 1rem;
-      letter-spacing: -2px;
+      line-height: 1.1;
     }
     
-    .hero-content p {
+    .hero-subtitle {
       font-size: clamp(1rem, 2vw, 1.5rem);
       color: var(--text-secondary);
+      margin-bottom: 2rem;
       font-weight: 300;
-      letter-spacing: 1px;
+    }
+    
+    .hero-image {
+      position: absolute;
+      right: 10%;
+      top: 50%;
+      transform: translateY(-50%);
+      max-width: 40%;
+      opacity: 0;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
     }
     
     /* 特性区域 */
     .features {
       padding: 8rem 0;
+      background: var(--dark-surface);
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
     
     .section-title {
-      font-size: clamp(2rem, 5vw, 4rem);
-      font-weight: 100;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 600;
       text-align: center;
       margin-bottom: 4rem;
-      letter-spacing: -1px;
+      color: var(--primary-gold);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 3rem;
     }
     
     .feature-card {
       padding: 3rem 2rem;
-      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 0.5rem;
       transition: all 0.3s ease;
       position: relative;
+      overflow: hidden;
+    }
+    
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    
+    .feature-card:hover::before {
+      transform: translateX(100%);
     }
     
     .feature-card:hover {
-      border-color: var(--text-primary);
       transform: translateY(-5px);
+      border-color: rgba(212, 175, 55, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
     
     .feature-icon {
       font-size: 3rem;
-      margin-bottom: 2rem;
-      opacity: 0.7;
+      color: var(--primary-gold);
+      margin-bottom: 1.5rem;
     }
     
-    .feature-card h3 {
+    .feature-title {
       font-size: 1.5rem;
-      font-weight: 400;
+      font-weight: 600;
       margin-bottom: 1rem;
-      letter-spacing: -0.5px;
-    }
-    
-    .feature-card p {
-      color: var(--text-secondary);
-      font-weight: 300;
-      line-height: 1.8;
-    }
-    
-    /* 体验区域 */
-    .experience {
-      padding: 8rem 0;
-      background: var(--bg-secondary);
-    }
-    
-    .experience-content {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
-    /* 文件上传区域 */
-    .upload-area {
-      border: 2px dashed var(--border-color);
-      padding: 4rem 2rem;
-      text-align: center;
-      margin-bottom: 3rem;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    
-    .upload-area:hover {
-      border-color: var(--text-primary);
-    }
-    
-    .upload-area h3 {
-      font-size: 1.5rem;
-      font-weight: 400;
-      margin-bottom: 1rem;
-    }
-    
-    .upload-area p {
-      color: var(--text-secondary);
-      margin-bottom: 2rem;
-    }
-    
-    /* 歌词显示区域 */
-    .lyric-display {
-      margin: 3rem 0;
-      text-align: center;
-    }
-    
-    .lyric-text {
-      font-size: clamp(1.5rem, 3vw, 2.5rem);
-      font-weight: 300;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-      min-height: 100px;
-      letter-spacing: -0.5px;
-    }
-    
-    .lyric-translation {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      font-weight: 300;
-      min-height: 50px;
-    }
-    
-    /* 输入区域 */
-    .input-area {
-      margin: 3rem 0;
-    }
-    
-    .minimal-input {
-      width: 100%;
-      padding: 1.5rem;
-      background: transparent;
-      border: 1px solid var(--border-color);
       color: var(--text-primary);
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .feature-description {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    /* 产品展示区域 */
+    .product-showcase {
+      padding: 8rem 0;
+    }
+    
+    .showcase-content {
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+    }
+    
+    .showcase-text {
+      flex: 1;
+    }
+    
+    .showcase-image {
+      flex: 1;
+      position: relative;
+    }
+    
+    .showcase-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .showcase-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: var(--primary-gold);
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .showcase-description {
       font-size: 1.1rem;
-      font-family: inherit;
-      transition: all 0.3s ease;
-      outline: none;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      line-height: 1.7;
     }
     
-    .minimal-input:focus {
-      border-color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.02);
-    }
-    
-    .minimal-input::placeholder {
-      color: var(--text-tertiary);
-    }
-    
-    /* 按钮 */
-    .minimal-btn {
+    /* 按钮样式 */
+    .luxury-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       padding: 1rem 2rem;
       background: transparent;
-      border: 1px solid var(--text-primary);
-      color: var(--text-primary);
+      border: 2px solid var(--primary-gold);
+      color: var(--primary-gold);
       font-size: 1rem;
-      font-family: inherit;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-weight: 300;
-      letter-spacing: 1px;
-    }
-    
-    .minimal-btn:hover:not(:disabled) {
-      background: var(--text-primary);
-      color: var(--bg-primary);
-    }
-    
-    .minimal-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    .btn-group {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    
-    /* 进度条 */
-    .progress-container {
-      width: 100%;
-      height: 2px;
-      background: var(--border-color);
-      margin: 2rem 0;
+      text-decoration: none;
+      position: relative;
       overflow: hidden;
     }
     
-    .progress-bar {
+    .luxury-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
       height: 100%;
-      background: var(--text-primary);
-      width: 0%;
-      transition: width 0.3s ease;
+      background: var(--primary-gold);
+      transition: left 0.3s ease;
+      z-index: -1;
     }
     
-    /* 时间微调 */
-    .tune-controls {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 2rem;
+    .luxury-btn:hover::before {
+      left: 0;
     }
     
-    .tune-btn {
-      padding: 0.5rem 1rem;
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .tune-btn:hover {
-      border-color: var(--text-primary);
-      color: var(--text-primary);
+    .luxury-btn:hover {
+      color: var(--dark-bg);
+      transform: translateY(-2px);
     }
     
     /* 页脚 */
     .footer {
       padding: 4rem 0;
-      border-top: 1px solid var(--border-color);
+      background: var(--dark-surface);
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    
+    .footer-content {
       text-align: center;
     }
     
-    .footer p {
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-gold);
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-text {
       color: var(--text-secondary);
-      font-weight: 300;
+      margin-bottom: 2rem;
     }
     
-    /* 反馈信息 */
-    .feedback {
-      text-align: center;
-      margin: 1rem 0;
-      min-height: 30px;
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
     }
     
-    .feedback.correct {
-      color: #4CAF50;
-    }
-    
-    .feedback.incorrect {
-      color: #f44336;
-    }
-    .feedback.warning {
-      color: #ff9800;
-    }
-    
-    /* 字符级高亮 */
-    .char-highlight {
-      position: relative;
-      display: inline-block;
-      margin: 0 1px;
-      transition: all 0.2s ease;
-    }
-    
-    .char-correct {
-      color: #4CAF50;
-      transform: scale(1.1);
-    }
-    
-    .char-incorrect {
-      color: #f44336;
-      background-color: rgba(244, 67, 54, 0.1);
-      border-radius: 2px;
-    }
-    
-    .char-pending {
+    .footer-links a {
       color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
     }
     
-    /* 鼠标跟随效果 */
-    .mouse-follow {
-      position: fixed;
-      width: 100px;
-      height: 100px;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    .footer-links a:hover {
+      color: var(--primary-gold);
+    }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .social-links a:hover {
+      background: var(--primary-gold);
+      color: var(--dark-bg);
+      transform: translateY(-2px);
     }
     
     /* 响应式设计 */
@@ -442,22 +577,46 @@
         display: none;
       }
       
-      .container {
-        padding: 0 1rem;
+      .hero-image {
+        display: none;
       }
       
-      .btn-group {
+      .showcase-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .fixed-scroll-layout {
         flex-direction: column;
       }
       
-      .minimal-grid {
-        gap: 2rem;
+      .scroll-content,
+      .fixed-content {
+        width: 100%;
+      }
+      
+      .fixed-content {
+        height: 50vh;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-links {
+        flex-direction: column;
+        align-items: center;
       }
     }
     
-    /* 隐藏文件输入 */
-    .file-input {
-      display: none;
+    /* 粒子背景 */
+    #particles-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
     }
     
     /* 加载动画 */
@@ -465,9 +624,9 @@
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 2px solid var(--border-color);
+      border: 2px solid rgba(212, 175, 55, 0.3);
       border-radius: 50%;
-      border-top-color: var(--text-primary);
+      border-top-color: var(--primary-gold);
       animation: spin 1s ease-in-out infinite;
     }
     
@@ -487,7 +646,7 @@
     
     .audio-bar {
       width: 2px;
-      background: var(--text-primary);
+      background: var(--primary-gold);
       border-radius: 1px;
       animation: audioWave 1.5s ease-in-out infinite;
     }
@@ -496,42 +655,19 @@
       0%, 100% { height: 5px; }
       50% { height: 30px; }
     }
-    /* 模板选择器 */
-    .template-selector {
-      margin: 1rem 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      justify-content: center;
-    }
-    .template-btn {
-      padding: 0.6rem 1.2rem;
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-radius: 4px;
-    }
-    .template-btn.active {
-      border-color: var(--text-primary);
-      color: var(--text-primary);
-      background: rgba(255,255,255,0.05);
-    }
-    .template-btn:hover {
-      border-color: var(--text-primary);
-      color: var(--text-primary);
-    }
   </style>
 </head>
 <body>
+  <!-- 粒子背景 -->
+  <div id="particles-bg"></div>
+
   <!-- 导航栏 -->
-  <nav class="navbar">
+  <nav class="navbar" id="navbar">
     <div class="nav-content">
       <div class="logo">LyricType</div>
       <ul class="nav-links">
         <li><a href="#features">特性</a></li>
+        <li><a href="#showcase">产品</a></li>
         <li><a href="#experience">体验</a></li>
         <li><a href="#about">关于</a></li>
       </ul>
@@ -540,7 +676,10 @@
 
   <!-- 英雄区域 -->
   <section class="hero">
-    <div class="parallax-bg">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <h1 class="hero-title luxury-font premium-text" data-text="LyricType">LyricType</h1>
+      <p class="hero-subtitle">简奢音乐学习体验，让歌词学习成为一种艺术</p>
       <div class="audio-visualizer">
         <div class="audio-bar" style="animation-delay: 0s;"></div>
         <div class="audio-bar" style="animation-delay: 0.1s;"></div>
@@ -558,68 +697,162 @@
         <div class="audio-bar" style="animation-delay: 1.3s;"></div>
         <div class="audio-bar" style="animation-delay: 1.4s;"></div>
       </div>
+      <a href="#experience" class="luxury-btn">
+        开始体验
+        <i class="fa fa-arrow-right"></i>
+      </a>
     </div>
-    <div class="hero-content">
-      <h1>Lyric<span class="typing" id="typing-text">Type</span></h1>
-      <p>极简歌词学习体验 · GitHub模板自动加载</p>
-    </div>
+    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/363a3e5d641a487383c00d24850529f0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078466&x-signature=eQEgBxiUHFZF0bdJ2yi3FdMHMRM%3D" alt="LyricType App" class="hero-image" id="heroImage">
   </section>
 
   <!-- 特性区域 -->
   <section id="features" class="features">
     <div class="container">
-      <h2 class="section-title fade-in">核心特性</h2>
-      <div class="minimal-grid">
-        <div class="feature-card hover-scale fade-in">
+      <h2 class="section-title luxury-font premium-text" data-text="核心特性">核心特性</h2>
+      <div class="features-grid">
+        <div class="feature-card">
           <div class="feature-icon">🎵</div>
-          <h3>GitHub模板自动识别</h3>
-          <p>上传指定命名的音频和歌词文件，页面自动识别加载，无需手动配置。</p>
+          <h3 class="feature-title">智能歌词识别</h3>
+          <p class="feature-description">
+            先进的音频分析技术，精准识别歌词时间轴，提供实时同步的歌词显示和输入验证，让学习体验更加流畅自然。
+          </p>
         </div>
-        <div class="feature-card hover-scale fade-in">
+        <div class="feature-card">
           <div class="feature-icon">⚡</div>
-          <h3>字符级实时验证</h3>
-          <p>逐字检测输入正确性，实时高亮反馈，精准提升歌词拼写能力。</p>
+          <h3 class="feature-title">实时反馈系统</h3>
+          <p class="feature-description">
+            毫秒级响应的输入验证，字符级别的精准反馈，实时高亮显示拼写错误，帮助您快速提升歌词记忆和拼写能力。
+          </p>
         </div>
-        <div class="feature-card hover-scale fade-in">
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3 class="feature-title">简奢视觉设计</h3>
+          <p class="feature-description">
+            精心设计的用户界面，采用高端奢华的视觉风格，深色背景配合金色点缀，创造沉浸式的学习环境。
+          </p>
+        </div>
+        <div class="feature-card">
           <div class="feature-icon">📱</div>
-          <h3>全端适配</h3>
-          <p>完美适配手机、平板、桌面设备，随时随地享受流畅的学习体验。</p>
+          <h3 class="feature-title">全端完美适配</h3>
+          <p class="feature-description">
+            完美适配手机、平板、桌面设备，响应式设计确保在任何屏幕尺寸下都能提供最佳的学习体验。
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <h3 class="feature-title">智能数据缓存</h3>
+          <p class="feature-description">
+            本地数据存储技术，自动保存学习进度和个人设置，支持离线使用，让学习不受网络限制。
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3 class="feature-title">GitHub模板支持</h3>
+          <p class="feature-description">
+            创新的GitHub模板系统，支持自定义音频和歌词文件，轻松扩展学习内容，打造个性化学习库。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 产品展示区域 -->
+  <section id="showcase" class="product-showcase">
+    <div class="container">
+      <div class="showcase-content">
+        <div class="showcase-text">
+          <h2 class="showcase-title premium-text" data-text="简奢体验">简奢体验</h2>
+          <p class="showcase-description">
+            LyricType 不仅仅是一款歌词学习应用，更是一种生活态度的体现。我们追求极简与奢华的完美平衡，通过精心设计的界面和流畅的交互，为您带来无与伦比的学习体验。
+          </p>
+          <p class="showcase-description">
+            每一个细节都经过精心打磨，从字体选择到色彩搭配，从动画效果到交互反馈，都体现了我们对品质的极致追求。
+          </p>
+          <button class="luxury-btn" onclick="openDrawer('productDetails')">
+            了解更多
+            <i class="fa fa-arrow-right"></i>
+          </button>
+        </div>
+        <div class="showcase-image">
+          <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/422a80097cdd4208abff21e0af221e43~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078477&x-signature=WXntU8NmXhcmgoH0P6B3Z0PiMs8%3D" alt="LyricType Interface">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 固定与滚动混合布局 -->
+  <section class="fixed-scroll-layout">
+    <!-- 左侧滚动内容区 -->
+    <div class="scroll-content">
+      <div class="h-screen flex flex-col justify-center p-6" data-section="1">
+        <h3 class="text-3xl font-bold mb-4 luxury-font premium-text" data-text="智能学习">智能学习</h3>
+        <p class="text-gray-300 text-lg">
+          基于先进的算法，为您提供个性化的学习建议，智能调整学习难度，让您的学习效率提升300%。
+        </p>
+      </div>
+    
+      <div class="h-screen flex flex-col justify-center p-6" data-section="2">
+        <h3 class="text-3xl font-bold mb-4 luxury-font premium-text" data-text="沉浸式体验">沉浸式体验</h3>
+        <p class="text-gray-300 text-lg">
+          精心设计的音频可视化效果，配合流畅的动画过渡，让您仿佛置身于音乐的海洋中，享受学习的乐趣。
+        </p>
+      </div>
+    
+      <div class="h-screen flex flex-col justify-center p-6" data-section="3">
+        <h3 class="text-3xl font-bold mb-4 luxury-font premium-text" data-text="专业工具">专业工具</h3>
+        <p class="text-gray-300 text-lg">
+          提供专业的歌词编辑、时间轴调整、音频控制等功能，满足您的各种学习需求，成为您音乐学习的得力助手。
+        </p>
+      </div>
+    </div>
+
+    <!-- 右侧固定内容区 -->
+    <div class="fixed-content">
+      <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/363a3e5d641a487383c00d24850529f0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078466&x-signature=eQEgBxiUHFZF0bdJ2yi3FdMHMRM%3D" class="fixed-image active" data-image="1">
+      <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/422a80097cdd4208abff21e0af221e43~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078477&x-signature=WXntU8NmXhcmgoH0P6B3Z0PiMs8%3D" class="fixed-image" data-image="2">
+      <div class="fixed-image" data-image="3" style="background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 70%); display: flex; align-items: center; justify-content: center;">
+        <div class="text-center">
+          <div class="text-6xl mb-4">🎵</div>
+          <div class="text-2xl luxury-font premium-text" data-text="专业品质">专业品质</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 体验区域 -->
-  <section id="experience" class="experience">
+  <section id="experience" class="features">
     <div class="container">
-      <h2 class="section-title fade-in">开始体验</h2>
-      <div class="experience-content">
+      <h2 class="section-title luxury-font premium-text" data-text="开始体验">开始体验</h2>
+      <div class="max-w-4xl mx-auto">
         <!-- 文件上传/模板加载区域 -->
-        <div id="dropZone" class="upload-area">
-          <h3>加载GitHub模板文件</h3>
-          <p class="feedback warning" id="templateTip">正在检测模板文件...</p>
+        <div id="dropZone" class="upload-area" style="border: 2px dashed rgba(212, 175, 55, 0.3); padding: 4rem 2rem; text-align: center; margin-bottom: 3rem; transition: all 0.3s ease; cursor: pointer; border-radius: 0.5rem;">
+          <h3 class="text-2xl font-bold mb-2 luxury-font premium-text" data-text="加载模板文件">加载模板文件</h3>
+          <p class="feedback warning mb-4" id="templateTip" style="color: var(--text-secondary);">正在检测GitHub模板文件...</p>
           <!-- 模板选择器动态生成 -->
-          <div class="template-selector" id="templateSelector"></div>
-          <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc"/>
-          <div class="btn-group" style="justify-content: center; margin-top: 2rem;">
-            <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">自定义上传文件</button>
-            <button class="minimal-btn" onclick="showTemplateInfo()">模板命名规则</button>
+          <div class="template-selector" id="templateSelector" style="margin: 2rem 0; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;"></div>
+          <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc" style="display: none;"/>
+          <div class="flex flex-col sm:flex-row gap-2 justify-center mt-4">
+            <button class="luxury-btn" onclick="document.getElementById('fileInput').click()">
+              <i class="fa fa-upload mr-2"></i>
+              上传文件
+            </button>
+            <button class="luxury-btn" onclick="showTemplateInfo()">
+              <i class="fa fa-info-circle mr-2"></i>
+              使用说明
+            </button>
           </div>
         </div>
         
-        <!-- 进度条 -->
-        <div class="progress-container" id="progressContainer" style="display: none;">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-        
         <!-- 歌词显示区域 -->
-        <div class="lyric-display">
-          <div class="lyric-text" id="lyricBox">等待模板加载/文件上传...</div>
-          <div class="lyric-translation" id="transBox"></div>
+        <div class="lyric-display" style="margin: 3rem 0; text-align: center;">
+          <div class="lyric-text" id="lyricBox" style="font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; line-height: 1.6; margin-bottom: 2rem; min-height: 100px; color: var(--primary-gold); font-family: 'Times New Roman', serif;">
+            等待模板加载/文件上传...
+          </div>
+          <div class="lyric-translation" id="transBox" style="font-size: 1.3rem; color: var(--text-secondary); font-weight: 300; min-height: 50px; font-family: 'Times New Roman', serif;"></div>
         </div>
         
         <!-- 输入区域 -->
-        <div class="input-area">
+        <div class="input-area" style="margin: 3rem 0;">
           <div style="position: relative;">
             <input 
               type="text" 
@@ -627,50 +860,50 @@
               class="minimal-input" 
               placeholder="在此输入歌词..." 
               disabled
-              style="color: var(--text-primary); caret-color: var(--text-primary);"
+              style="width: 100%; padding: 1.5rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(212, 175, 55, 0.3); color: var(--text-primary); font-size: 1.4rem; font-family: 'Times New Roman', serif; transition: all 0.3s ease; outline: none; border-radius: 0.5rem;"
               spellcheck="false"
             />
-            <div id="highlightLayer" class="absolute inset-0 flex items-center px-6 pointer-events-none" style="font-size: 1.1rem; font-family: inherit;"></div>
+            <div id="highlightLayer" class="absolute -top-[100px] left-0 right-0 flex items-center px-6 pointer-events-none" style="font-size: 1.4rem; font-family: 'Times New Roman', serif; padding: 0 1.5rem;"></div>
           </div>
-          <div class="feedback" id="feedback"></div>
+          <div class="feedback" id="feedback" style="text-align: center; margin: 1rem 0; min-height: 30px; color: var(--primary-gold);"></div>
         </div>
         
         <!-- 控制按钮 -->
-        <div class="btn-group">
-          <button id="startBtn" class="minimal-btn" disabled>开始练习</button>
-          <button id="pauseBtn" class="minimal-btn" disabled>暂停</button>
-        </div>
-        
-        <!-- 时间微调 -->
-        <div class="tune-controls" id="tuneControls" style="display: none;">
-          <button class="tune-btn" onclick="shiftTime(-0.1)">-0.1s</button>
-          <button class="tune-btn" onclick="shiftTime(+0.1)">+0.1s</button>
-        </div>
-        
-        <!-- 导出按钮 -->
-        <div class="btn-group" style="margin-top: 3rem;">
-          <button id="exportBtn" class="minimal-btn" disabled>导出歌词</button>
-          <button id="clearBtn" class="minimal-btn">清除缓存</button>
+        <div class="flex flex-col sm:flex-row gap-2 justify-center">
+          <button id="startBtn" class="luxury-btn" disabled>
+            <i class="fa fa-play mr-2"></i>
+            开始练习
+          </button>
+          <button id="pauseBtn" class="luxury-btn" disabled>
+            <i class="fa fa-pause mr-2"></i>
+            暂停
+          </button>
+          <button id="exportBtn" class="luxury-btn" disabled>
+            <i class="fa fa-download mr-2"></i>
+            导出歌词
+          </button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 关于区域 -->
-  <section id="about" class="features">
+  <section id="about" class="product-showcase">
     <div class="container">
-      <h2 class="section-title fade-in">关于 LyricType</h2>
-      <div class="minimal-grid">
-        <div class="fade-in">
-          <h3>设计理念</h3>
-          <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.8;">
-            LyricType 秉承"少即是多"的设计哲学，通过极简的界面和流畅的交互，为用户提供专注的歌词学习体验。
-          </p>
+      <div class="showcase-content">
+        <div class="showcase-image">
+          <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/363a3e5d641a487383c00d24850529f0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078466&x-signature=eQEgBxiUHFZF0bdJ2yi3FdMHMRM%3D" alt="LyricType App">
         </div>
-        <div class="fade-in">
-          <h3>技术特色</h3>
-          <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.8;">
-            适配GitHub Pages部署，支持模板文件自动识别、离线缓存、实时音频处理，让歌词学习更高效。
+        <div class="showcase-text">
+          <h2 class="showcase-title premium-text" data-text="关于 LyricType">关于 LyricType</h2>
+          <p class="showcase-description">
+            LyricType 诞生于对音乐和学习的热爱。我们相信，学习歌词不应该是枯燥的记忆过程，而应该是一种享受音乐的方式。
+          </p>
+          <p class="showcase-description">
+            通过创新的技术和精心的设计，我们打造了这款简奢风格的歌词学习应用，旨在为音乐爱好者提供最好的学习体验。
+          </p>
+          <p class="showcase-description">
+            无论您是音乐初学者，还是想要提升语言能力的学习者，LyricType 都能满足您的需求，让学习变得更加高效和有趣。
           </p>
         </div>
       </div>
@@ -680,22 +913,105 @@
   <!-- 页脚 -->
   <footer class="footer">
     <div class="container">
-      <p>LyricType · 极简歌词学习体验 · GitHub模板自动加载</p>
+      <div class="footer-content">
+        <div class="footer-logo">LyricType</div>
+        <p class="footer-text">简奢音乐学习体验，让歌词学习成为一种艺术</p>
+        <div class="footer-links">
+          <a href="#features">特性</a>
+          <a href="#showcase">产品</a>
+          <a href="#experience">体验</a>
+          <a href="#about">关于</a>
+        </div>
+        <div class="social-links">
+          <a href="#"><i class="fa fa-github"></i></a>
+          <a href="#"><i class="fa fa-twitter"></i></a>
+          <a href="#"><i class="fa fa-instagram"></i></a>
+          <a href="#"><i class="fa fa-linkedin"></i></a>
+        </div>
+      </div>
     </div>
   </footer>
 
   <!-- 音频元素 -->
   <audio id="audio"></audio>
 
-  <!-- 鼠标跟随元素 -->
-  <div class="mouse-follow" id="mouseFollow"></div>
+  <!-- 灵动岛 -->
+  <div class="dynamic-island-container" id="dynamic-island-container">
+    <div class="dynamic-island" id="dynamic-island">
+      <span class="island-text" id="island-text">欢迎使用 LyricType</span>
+      <div class="island-icon" id="island-icon">
+        <i class="fa fa-music"></i>
+      </div>
+    </div>
+  </div>
 
+  <!-- 抽屉式详情 -->
+  <div id="productDetails" class="drawer">
+    <div class="drawer-backdrop"></div>
+    <div class="drawer-content">
+      <button class="drawer-close" onclick="closeDrawer('productDetails')">
+        <i class="fa fa-times"></i>
+      </button>
+      <div class="drawer-scroll">
+        <h2 class="text-3xl font-bold mb-6 luxury-font premium-text" data-text="产品详情">产品详情</h2>
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-2xl font-bold mb-3 luxury-font">设计理念</h3>
+            <p class="text-gray-300">
+              LyricType 秉承"少即是多"的设计哲学，通过极简的界面和流畅的交互，为用户提供专注的歌词学习体验。我们相信，最好的设计应该是无形的，让用户能够专注于内容本身。
+            </p>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold mb-3 luxury-font">技术特色</h3>
+            <p class="text-gray-300">
+              采用最先进的前端技术栈，包括 HTML5、CSS3、JavaScript、Tailwind CSS 等，确保应用的性能和用户体验。支持离线缓存、实时音频处理、智能歌词识别等功能。
+            </p>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold mb-3 luxury-font">使用方法</h3>
+            <p class="text-gray-300">
+              1. 上传您的音频文件（MP3格式）和歌词文件（LRC格式）<br>
+              2. 点击"开始练习"按钮<br>
+              3. 跟随歌词提示，在输入框中输入对应的歌词<br>
+              4. 系统会实时验证您的输入，并提供反馈<br>
+              5. 完成练习后，可以导出您的学习记录
+            </p>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold mb-3 luxury-font">GitHub 模板</h3>
+            <p class="text-gray-300">
+              LyricType 支持 GitHub 模板系统，您可以将音频和歌词文件按照特定命名规则上传到 GitHub 仓库，应用会自动识别并加载这些文件。
+            </p>
+            <div class="bg-gray-800 p-4 rounded-lg mt-3">
+              <p class="text-sm text-gray-300">
+                模板命名规则：<br>
+                - 音频文件：lyrictype-template1.mp3<br>
+                - 歌词文件：lyrictype-template1.lrc<br>
+                - 支持最多5个模板（template1 到 template5）
+              </p>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold mb-3 luxury-font">系统要求</h3>
+            <p class="text-gray-300">
+              - 现代浏览器（Chrome、Firefox、Safari、Edge 等）<br>
+              - 支持 HTML5 和 JavaScript<br>
+              - 建议使用最新版本的浏览器以获得最佳体验
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
     /* ========== 基础设置 ========== */
-    const DB_NAME = 'lyrictype', 
+    const DB_NAME = 'lyrictype_luxury', 
           AUDIO_STORE = 'audio', 
           LRC_STORE = 'lrc', 
           TIME_STORE = 'time';
+          
     // 模板文件配置 - 5个模板
     const TEMPLATE_COUNT = 5;
     const TEMPLATE_PREFIX = 'lyrictype-template';
@@ -713,20 +1029,21 @@
     const startBtn = document.getElementById('startBtn');
     const pauseBtn = document.getElementById('pauseBtn');
     const exportBtn = document.getElementById('exportBtn');
-    const clearBtn = document.getElementById('clearBtn');
     const inputBox = document.getElementById('inputBox');
     const feedback = document.getElementById('feedback');
     const templateTip = document.getElementById('templateTip');
     const lyricBox = document.getElementById('lyricBox');
     const transBox = document.getElementById('transBox');
-    const progressContainer = document.getElementById('progressContainer');
-    const progressBar = document.getElementById('progressBar');
     const highlightLayer = document.getElementById('highlightLayer');
     const audioEl = document.getElementById('audio');
-    const tuneControls = document.getElementById('tuneControls');
-    const typingText = document.getElementById('typing-text');
-    const mouseFollow = document.getElementById('mouseFollow');
-    const templateSelector = document.getElementById('templateSelector');
+    const heroImage = document.getElementById('heroImage');
+    const navbar = document.getElementById('navbar');
+    
+    // 灵动岛元素
+    const islandContainer = document.getElementById('dynamic-island-container');
+    const islandText = document.getElementById('island-text');
+    const islandIcon = document.getElementById('island-icon');
+    const island = document.getElementById('dynamic-island');
 
     /* ========== IndexedDB 初始化 ========== */
     const req = indexedDB.open(DB_NAME, 1);
@@ -748,97 +1065,227 @@
       checkAllTemplates();
     };
 
-    /* ========== 打字效果 ========== */
-    function typingEffect(element, words, typingSpeed = 100, pauseTime = 1000) {
-      let wordIndex = 0;
-      let charIndex = 0;
-      let isDeleting = false;
-      function type() {
-        const currentWord = words[wordIndex];
-        if (isDeleting) {
-          element.textContent = currentWord.substring(0, charIndex - 1);
-          charIndex--;
-        } else {
-          element.textContent = currentWord.substring(0, charIndex + 1);
-          charIndex++;
-        }
-        if (!isDeleting && charIndex === currentWord.length) {
-          isDeleting = true;
-          setTimeout(type, pauseTime);
-        } else if (isDeleting && charIndex === 0) {
-          isDeleting = false;
-          wordIndex = (wordIndex + 1) % words.length;
-          setTimeout(type, 200);
-        } else {
-          setTimeout(type, isDeleting ? typingSpeed/2 : typingSpeed);
-        }
-      }
-      type();
-    }
-    typingEffect(typingText, ['Type', 'Learn', 'Practice', 'Enjoy'], 100, 2000);
-
     /* ========== 页面动效初始化 ========== */
-    function setupFadeIn() {
-      const fadeElements = document.querySelectorAll('.fade-in');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
+    function setupParticles() {
+      particlesJS('particles-bg', {
+        particles: {
+          number: { value: 50, density: { enable: true, value_area: 800 } },
+          color: { value: '#d4af37' },
+          shape: {
+            type: 'circle',
+            stroke: { width: 0, color: '#000000' },
+          },
+          opacity: {
+            value: 0.3,
+            random: true,
+            anim: { enable: false }
+          },
+          size: {
+            value: 3,
+            random: true,
+            anim: { enable: false }
+          },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: '#d4af37',
+            opacity: 0.2,
+            width: 1
+          },
+          move: {
+            enable: true,
+            speed: 1,
+            direction: 'none',
+            random: true,
+            straight: false,
+            out_mode: 'out',
+            bounce: false,
+          }
+        },
+        interactivity: {
+          detect_on: 'canvas',
+          events: {
+            onhover: { enable: true, mode: 'grab' },
+            onclick: { enable: true, mode: 'push' },
+            resize: true
+          },
+          modes: {
+            grab: { distance: 140, line_linked: { opacity: 0.5 } },
+            push: { particles_nb: 3 }
+          }
+        },
+        retina_detect: true
+      });
+    }
+    
+    function setupScrollAnimations() {
+      // 导航栏滚动效果
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+      
+      // 初始化 GSAP ScrollTrigger
+      gsap.registerPlugin(ScrollTrigger);
+      
+      // 英雄区域图片动画
+      gsap.to(heroImage, {
+        opacity: 1,
+        x: 0,
+        duration: 1.5,
+        delay: 0.5,
+        ease: 'power3.out'
+      });
+      
+      // 特性卡片动画
+      gsap.utils.toArray('.feature-card').forEach((card, i) => {
+        gsap.from(card, {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          },
+          delay: i * 0.1
+        });
+      });
+      
+      // 展示区域动画
+      gsap.utils.toArray('.showcase-content').forEach(content => {
+        const text = content.querySelector('.showcase-text');
+        const image = content.querySelector('.showcase-image');
+        
+        gsap.from(text, {
+          x: -50,
+          opacity: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: content,
+            start: 'top 80%'
           }
         });
-      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-      fadeElements.forEach(el => observer.observe(el));
+        
+        gsap.from(image, {
+          x: 50,
+          opacity: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: content,
+            start: 'top 80%'
+          },
+          delay: 0.2
+        });
+      });
     }
-    function setupParallax() {
-      const parallaxBg = document.querySelector('.parallax-bg');
+    
+    function setupFixedScrollLayout() {
+      const sections = document.querySelectorAll('[data-section]');
+      const images = document.querySelectorAll('.fixed-image');
+      
       window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const rate = scrolled * -0.5;
-        if (parallaxBg) parallaxBg.style.transform = `translateY(${rate}px)`;
+        sections.forEach(section => {
+          const rect = section.getBoundingClientRect();
+          const sectionId = section.dataset.section;
+          
+          // 当部分在视口中央时
+          if (rect.top < window.innerHeight/2 && rect.bottom > window.innerHeight/2) {
+            // 更新对应图片
+            images.forEach(img => {
+              if (img.dataset.image === sectionId) {
+                img.classList.add('active');
+              } else {
+                img.classList.remove('active');
+              }
+            });
+            
+            // 更新灵动岛
+            const titles = {
+              '1': '智能学习',
+              '2': '沉浸式体验',
+              '3': '专业工具'
+            };
+            updateIsland(titles[sectionId], 'fa-music');
+          }
+        });
       });
-    }
-    function setupMouseFollow() {
-      let mouseX = 0, mouseY = 0;
-      let trailX = 0, trailY = 0;
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        mouseFollow.style.opacity = '0.7';
-      });
-      function animateFollow() {
-        const speed = 0.1;
-        trailX += (mouseX - trailX) * speed;
-        trailY += (mouseY - trailY) * speed;
-        mouseFollow.style.left = `${trailX - 50}px`;
-        mouseFollow.style.top = `${trailY - 50}px`;
-        requestAnimationFrame(animateFollow);
-      }
-      animateFollow();
     }
 
-    /* ========== 恢复初始上传区域界面（核心修复） ========== */
-    function restoreDropZoneUI() {
-      // 完全恢复初始界面结构
-      dropZone.innerHTML = `
-        <h3>加载GitHub模板文件</h3>
-        <p class="feedback warning" id="templateTip">正在重新检测模板文件...</p>
-        <!-- 模板选择器动态生成 -->
-        <div class="template-selector" id="templateSelector"></div>
-        <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc"/>
-        <div class="btn-group" style="justify-content: center; margin-top: 2rem;">
-          <button class="minimal-btn" onclick="document.getElementById('fileInput').click()">自定义上传文件</button>
-          <button class="minimal-btn" onclick="showTemplateInfo()">模板命名规则</button>
-        </div>
-      `;
-      // 重新绑定DOM元素
-      templateTip = document.getElementById('templateTip');
-      templateSelector = document.getElementById('fileInput').nextElementSibling;
-      fileInput = document.getElementById('fileInput');
-      // 重新绑定文件选择事件
-      fileInput.addEventListener('change', e => handleFiles(e.target.files));
-      // 重新检测模板
-      checkAllTemplates();
+    /* ========== 灵动岛功能 ========== */
+    function updateIsland(newText, newIcon = 'fa-music') {
+      // 文字变化动画
+      gsap.to(islandText, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.3,
+        onComplete: () => {
+          islandText.textContent = newText;
+          islandIcon.innerHTML = `<i class="fa ${newIcon}"></i>`;
+          
+          gsap.to(islandText, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.3
+          });
+          
+          // 根据文本长度调整宽度
+          const baseWidth = 200;
+          const textWidth = islandText.offsetWidth;
+          gsap.to(island, {
+            width: `${Math.max(baseWidth, textWidth + 70)}px`,
+            duration: 0.3
+          });
+        }
+      });
+    }
+    
+    function hideIsland() {
+      gsap.to(islandContainer, {
+        y: 100,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.inOut'
+      });
+    }
+    
+    function showIsland() {
+      gsap.to(islandContainer, {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power3.inOut'
+      });
+    }
+
+    /* ========== 抽屉式详情功能 ========== */
+    function openDrawer(id) {
+      const drawer = document.getElementById(id);
+      const backdrop = drawer.querySelector('.drawer-backdrop');
+      const content = drawer.querySelector('.drawer-content');
+      
+      // 显示抽屉
+      drawer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // 绑定关闭事件
+      backdrop.onclick = () => closeDrawer(id);
+    }
+    
+    function closeDrawer(id) {
+      const drawer = document.getElementById(id);
+      const backdrop = drawer.querySelector('.drawer-backdrop');
+      const content = drawer.querySelector('.drawer-content');
+      
+      // 隐藏抽屉
+      drawer.classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     /* ========== GitHub模板文件检测 ========== */
@@ -857,6 +1304,7 @@
         return false;
       }
     }
+    
     // 检测所有模板并生成选择器
     async function checkAllTemplates() {
       templateTip.textContent = '正在检测模板文件，请稍候...';
@@ -881,22 +1329,25 @@
         }
       }
     }
+    
     // 生成模板选择器按钮
     function generateTemplateSelector() {
+      const templateSelector = document.getElementById('templateSelector');
       templateSelector.innerHTML = '';
       for (let i = 1; i <= TEMPLATE_COUNT; i++) {
         const btn = document.createElement('button');
-        btn.className = `template-btn ${templateExists[i] ? '' : 'disabled'}`;
-        btn.textContent = `模板${i}`;
+        btn.className = `px-4 py-2 rounded-full border ${templateExists[i] ? 'border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black' : 'border-gray-600 text-gray-600 cursor-not-allowed'} transition-all duration-300`;
+        btn.textContent = `模板 ${i}`;
         btn.disabled = !templateExists[i];
         btn.onclick = () => {
-          document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
+          document.querySelectorAll('#templateSelector button').forEach(b => b.classList.remove('bg-yellow-500', 'text-black'));
+          btn.classList.add('bg-yellow-500', 'text-black');
           loadTemplate(i);
         };
         templateSelector.appendChild(btn);
       }
     }
+    
     // 加载指定编号的GitHub模板
     function loadTemplate(templateNum) {
       if (!templateExists[templateNum]) return;
@@ -923,7 +1374,9 @@
           while ((m = re.exec(lrcText)) !== null) {
             const t = parseInt(m[1]) * 60 + parseInt(m[2]) + parseInt(m[3].padEnd(3, '0')) / 1000;
             const [en, zh = ''] = m[4].trim().split('|').map(s => s.trim());
-            lrcData.push({ time: t, en, zh });
+            // 将中文冒号替换为英文冒号
+            const enNormalized = en.replace(/：/g, ':');
+            lrcData.push({ time: t, en: enNormalized, zh });
           }
           if (!lrcData.length) throw new Error('未解析到有效歌词');
           
@@ -932,22 +1385,31 @@
           audioEl.src = audioURL;
           
           // 更新界面
-          dropZone.querySelector('h3').textContent = `已加载 GitHub 模板${templateNum}`;
+          dropZone.querySelector('h3').textContent = `已加载模板 ${templateNum}`;
           lyricBox.textContent = lrcData[0].en;
           transBox.textContent = lrcData[0].zh;
           startBtn.disabled = false;
           exportBtn.disabled = false;
-          feedback.textContent = `模板${templateNum}加载成功，可开始练习`;
+          feedback.textContent = `模板 ${templateNum} 加载成功，可开始练习`;
           feedback.className = 'feedback correct';
+          
+          // 更新灵动岛
+          updateIsland(`模板 ${templateNum} 已加载`, 'fa-check');
           
           // 保存到缓存
           saveToDB(lrcText, mp3Url);
         })
         .catch(err => {
           console.error('模板加载失败:', err);
-          lyricBox.textContent = `模板${templateNum}加载失败`;
+          lyricBox.textContent = `模板 ${templateNum} 加载失败`;
           feedback.textContent = `错误：${err.message}`;
           feedback.className = 'feedback incorrect';
+          
+          // 更新灵动岛
+          updateIsland('加载失败', 'fa-exclamation-circle');
+          setTimeout(() => {
+            updateIsland('欢迎使用 LyricType', 'fa-music');
+          }, 2000);
         });
     }
 
@@ -960,6 +1422,7 @@
       });
     });
     dropZone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+    
     function handleFiles(files) {
       let audio = null, lrc = null;
       [...files].forEach(f => {
@@ -990,13 +1453,16 @@
         while ((m = re.exec(lrcText)) !== null) {
           const t = parseInt(m[1]) * 60 + parseInt(m[2]) + parseInt(m[3].padEnd(3, '0')) / 1000;
           const [en, zh = ''] = m[4].trim().split('|').map(s => s.trim());
-          lrcData.push({ time: t, en, zh });
+          // 将中文冒号替换为英文冒号
+          const enNormalized = en.replace(/：/g, ':');
+          lrcData.push({ time: t, en: enNormalized, zh });
         }
         if (!lrcData.length) {
           alert('未从LRC文件中解析到歌词');
           lyricBox.textContent = '未解析到歌词';
           return;
         }
+        
         // 存储到数据库并更新界面
         const tx = db.transaction([AUDIO_STORE, LRC_STORE, TIME_STORE], 'readwrite');
         tx.objectStore(AUDIO_STORE).put(audioBuf, 'audio');
@@ -1012,6 +1478,9 @@
           exportBtn.disabled = false;
           lyricBox.textContent = lrcData[0].en;
           transBox.textContent = lrcData[0].zh;
+          
+          // 更新灵动岛
+          updateIsland('文件上传成功', 'fa-check');
         };
       });
     }
@@ -1024,6 +1493,7 @@
       tx.objectStore(AUDIO_STORE).put(audioUrl, 'lrc');
       tx.oncomplete = () => console.log('当前模板已保存到缓存');
     }
+    
     function loadFromDB() {
       const tx = db.transaction([AUDIO_STORE, LRC_STORE, TIME_STORE], 'readonly');
       const audioGet = tx.objectStore(AUDIO_STORE).get('audio');
@@ -1038,7 +1508,9 @@
           while ((m = re.exec(lrcGet.result)) !== null) {
             const t = parseInt(m[1]) * 60 + parseInt(m[2]) + parseInt(m[3].padEnd(3, '0')) / 1000;
             const [en, zh = ''] = m[4].trim().split('|').map(s => s.trim());
-            lrcData.push({ time: t, en, zh });
+            // 将中文冒号替换为英文冒号
+            const enNormalized = en.replace(/：/g, ':');
+            lrcData.push({ time: t, en: enNormalized, zh });
           }
           // 加载时间微调
           offGet.result.forEach(o => timeOffset[o.key] = o.val);
@@ -1053,36 +1525,10 @@
             lyricBox.textContent = lrcData[0].en;
             transBox.textContent = lrcData[0].zh;
           }
+          
+          // 更新灵动岛
+          updateIsland('缓存加载成功', 'fa-refresh');
         }
-      };
-    }
-    function clearDB() {
-      if (!db) {
-        feedback.textContent = '缓存未初始化，无需清除';
-        feedback.className = 'feedback warning';
-        setTimeout(() => feedback.textContent = '', 2000);
-        return;
-      }
-      const tx = db.transaction([AUDIO_STORE, LRC_STORE, TIME_STORE], 'readwrite');
-      [AUDIO_STORE, LRC_STORE, TIME_STORE].forEach(s => tx.objectStore(s).clear());
-      tx.oncomplete = () => {
-        audioURL = '';
-        lrcData = [];
-        timeOffset = {};
-        currentIndex = 0;
-        startBtn.disabled = true;
-        pauseBtn.disabled = true;
-        exportBtn.disabled = true;
-        inputBox.disabled = true;
-        lyricBox.textContent = '缓存已清除';
-        transBox.textContent = '';
-        templateTip.textContent = '缓存已清除，重新检测GitHub模板';
-        templateTip.className = 'feedback warning';
-        progressContainer.style.display = 'none';
-        tuneControls.style.display = 'none';
-        audioEl.src = '';
-        // 重新检测模板
-        checkAllTemplates();
       };
     }
 
@@ -1090,46 +1536,49 @@
     startBtn.onclick = startGame;
     pauseBtn.onclick = pauseGame;
     exportBtn.onclick = exportLyrics;
-    clearBtn.onclick = clearDB;
+    
     // 开始练习
     function startGame() {
       currentIndex = 0;
       inputBox.disabled = false;
       inputBox.value = '';
       feedback.textContent = '';
-      tuneControls.style.display = 'flex';
       startBtn.disabled = true;
       pauseBtn.disabled = false;
-      progressContainer.style.display = 'block';
-      updateProgress();
       showLyric();
       inputBox.focus();
+      
+      // 更新灵动岛
+      updateIsland('练习进行中', 'fa-play');
     }
+    
     // 暂停练习
     function pauseGame() {
       audioEl.pause();
       inputBox.disabled = true;
       startBtn.disabled = false;
       pauseBtn.disabled = true;
+      
+      // 更新灵动岛
+      updateIsland('练习已暂停', 'fa-pause');
     }
-    // 更新进度条
-    function updateProgress() {
-      if (lrcData.length > 0) {
-        const progress = (currentIndex / lrcData.length) * 100;
-        progressBar.style.width = progress + '%';
-      }
-    }
+    
     // 显示当前歌词
     function showLyric() {
       if (currentIndex >= lrcData.length) {
         lyricBox.textContent = '🎉 练习完成！';
         transBox.textContent = '';
         inputBox.disabled = true;
-        tuneControls.style.display = 'none';
         startBtn.disabled = false;
         pauseBtn.disabled = true;
-        updateProgress();
         highlightLayer.innerHTML = '';
+        
+        // 更新灵动岛
+        updateIsland('练习完成', 'fa-trophy');
+        setTimeout(() => {
+          updateIsland('欢迎使用 LyricType', 'fa-music');
+        }, 3000);
+        
         return;
       }
       const line = lrcData[currentIndex];
@@ -1138,21 +1587,24 @@
       inputBox.focus();
       updateCharHighlight('', line.en);
     }
+    
     // 字符级实时高亮
     inputBox.addEventListener('input', function() {
       const user = this.value;
       const correct = lrcData[currentIndex].en;
       updateCharHighlight(user, correct);
+      
       // 验证输入
       if (user.toLowerCase() === correct.toLowerCase()) {
         feedback.textContent = '✓ 正确';
         feedback.className = 'feedback correct';
+        
         // 播放对应音频片段
         const t = lrcData[currentIndex].time + (timeOffset[currentIndex] || 0);
         playSegment(t);
+        
         // 切换下一句
         currentIndex++;
-        updateProgress();
         this.value = '';
         highlightLayer.innerHTML = '';
         setTimeout(() => {
@@ -1171,6 +1623,7 @@
         }, 2000);
       }
     });
+    
     // 更新字符高亮
     function updateCharHighlight(user, correct) {
       let html = '';
@@ -1178,42 +1631,37 @@
       for (let i = 0; i < maxLength; i++) {
         const userChar = user[i] || '';
         const correctChar = correct[i] || '';
-        let className = 'char-highlight';
+        let className = 'char-highlight inline-block mx-0.5 transition-all duration-200';
         if (i < user.length) {
-          if (userChar.toLowerCase() === correctChar.toLowerCase() || (userChar === ':' && correctChar === ':') || (userChar === '：' && correctChar === '：')) {
-            className += ' char-correct';
+          if (userChar.toLowerCase() === correctChar.toLowerCase() || (userChar === ':' && correctChar === ':') || (userChar === '：' && correctChar === '：') || (userChar === ':' && correctChar === '：') || (userChar === '：' && correctChar === ':')) {
+            className += ' text-green-500 scale-110';
           } else {
-            className += ' char-incorrect';
+            className += ' text-red-500 bg-red-500/10 rounded';
           }
         } else {
-          className += ' char-pending';
+          className += ' text-gray-400';
         }
         html += `<span class="${className}">${correctChar}</span>`;
       }
       highlightLayer.innerHTML = html;
     }
+    
     // 播放音频片段
     function playSegment(start) {
       audioEl.currentTime = Math.max(0, start);
-      audioEl.play();
+      audioEl.play().then(() => {
+        console.log('音频播放成功，时间:', start);
+      }).catch(error => {
+        console.warn('音频播放失败:', error.message);
+        // 尝试用户交互后播放
+        if (error.name === 'NotAllowedError') {
+          console.log('需要用户交互才能播放音频');
+          // 可以在这里添加提示信息
+        }
+      });
       setTimeout(() => audioEl.pause(), 3500);
     }
-    // 时间微调
-    function shiftTime(delta) {
-      const key = currentIndex;
-      timeOffset[key] = (timeOffset[key] || 0) + delta;
-      // 保存到数据库
-      if (db) {
-        const tx = db.transaction(TIME_STORE, 'readwrite');
-        tx.objectStore(TIME_STORE).put(timeOffset[key], key);
-      }
-      feedback.textContent = `时间调整: ${delta > 0 ? '+' : ''}${delta}s`;
-      feedback.className = 'feedback correct';
-      setTimeout(() => {
-        feedback.textContent = '';
-        feedback.className = 'feedback';
-      }, 2000);
-    }
+    
     // 导出歌词
     function exportLyrics() {
       if (lrcData.length === 0) {
@@ -1244,13 +1692,19 @@
       feedback.textContent = '歌词已导出';
       feedback.className = 'feedback correct';
       setTimeout(() => feedback.textContent = '', 2000);
+      
+      // 更新灵动岛
+      updateIsland('歌词已导出', 'fa-download');
+      setTimeout(() => {
+        updateIsland('欢迎使用 LyricType', 'fa-music');
+      }, 2000);
     }
 
-    /* ========== 模板说明弹窗（修复返回逻辑） ========== */
+    /* ========== 模板说明弹窗 ========== */
     function showTemplateInfo() {
       const templateInfo = `
-        <h3>GitHub模板文件命名规则</h3>
-        <div style="text-align: left; max-height: 300px; overflow-y: auto; margin: 2rem 0; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 4px;">
+        <h3 class="text-2xl font-bold mb-4 luxury-font premium-text" data-text="使用说明">使用说明</h3>
+        <div style="text-align: left; max-height: 300px; overflow-y: auto; margin: 2rem 0; padding: 1.5rem; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 0.5rem; background: rgba(255, 255, 255, 0.02);">
           <p style="margin-bottom: 1.5rem; font-weight: 500;">将以下文件上传到GitHub仓库<strong>根目录</strong>，页面将自动识别：</p>
           <p style="margin-bottom: 0.8rem;">📌 模板1：lyrictype-template1.mp3 + lyrictype-template1.lrc</p>
           <p style="margin-bottom: 0.8rem;">📌 模板2：lyrictype-template2.mp3 + lyrictype-template2.lrc</p>
@@ -1261,16 +1715,62 @@
           <p style="margin-bottom: 0.8rem; color: #ff9800;">⚠️ 注意：音频仅支持MP3，歌词必须为标准LRC格式，且一一对应</p>
           <p style="color: #aaaaaa;">💡 提示：删除/替换仓库中的模板文件，页面刷新后将自动更新</p>
         </div>
-        <button class="minimal-btn" onclick="restoreDropZoneUI()">返回并重新检测</button>
+        <button class="luxury-btn" onclick="restoreDropZoneUI()">
+          <i class="fa fa-arrow-left mr-2"></i>
+          返回
+        </button>
       `;
       dropZone.innerHTML = templateInfo;
+    }
+    
+    /* ========== 恢复初始上传区域界面 ========== */
+    function restoreDropZoneUI() {
+      // 完全恢复初始界面结构
+      dropZone.innerHTML = `
+        <h3 class="text-2xl font-bold mb-2 luxury-font premium-text" data-text="加载模板文件">加载模板文件</h3>
+        <p class="feedback warning mb-4" id="templateTip" style="color: var(--text-secondary);">正在重新检测模板文件...</p>
+        <!-- 模板选择器动态生成 -->
+        <div class="template-selector" id="templateSelector" style="margin: 2rem 0; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;"></div>
+        <input type="file" id="fileInput" class="file-input" multiple accept="audio/*,.lrc" style="display: none;"/>
+        <div class="flex flex-col sm:flex-row gap-2 justify-center mt-4">
+          <button class="luxury-btn" onclick="document.getElementById('fileInput').click()">
+            <i class="fa fa-upload mr-2"></i>
+            上传文件
+          </button>
+          <button class="luxury-btn" onclick="showTemplateInfo()">
+            <i class="fa fa-info-circle mr-2"></i>
+            使用说明
+          </button>
+        </div>
+      `;
+      // 重新绑定DOM元素
+      templateTip = document.getElementById('templateTip');
+      templateSelector = document.getElementById('templateSelector');
+      fileInput = document.getElementById('fileInput');
+      // 重新绑定文件选择事件
+      fileInput.addEventListener('change', e => handleFiles(e.target.files));
+      // 重新检测模板
+      checkAllTemplates();
     }
 
     /* ========== 页面初始化 ========== */
     document.addEventListener('DOMContentLoaded', () => {
-      setupFadeIn();
-      setupParallax();
-      setupMouseFollow();
+      setupParticles();
+      setupScrollAnimations();
+      setupFixedScrollLayout();
+      
+      // 初始化质感文字
+      document.querySelectorAll('.premium-text').forEach(el => {
+        el.setAttribute('data-text', el.textContent);
+      });
+      
+      // 灵动岛欢迎动画
+      setTimeout(() => {
+        updateIsland('开始您的音乐之旅', 'fa-compass');
+        setTimeout(() => {
+          updateIsland('欢迎使用 LyricType', 'fa-music');
+        }, 3000);
+      }, 2000);
     });
   </script>
 </body>
