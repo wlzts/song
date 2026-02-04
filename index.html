@@ -4,6 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>LyricType - 简奢音乐学习体验</title>
+  <!-- 修改网页图标为音乐符号 -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -20 80 90'><text y='.9em' font-size='60'>🎵</text></svg>" type="image/svg+xml"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -11,11 +13,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
+      /* 深色主题变量 */
       --primary-gold: #d4af37;
       --dark-bg: #0a0a0a;
       --dark-surface: #111111;
       --text-primary: #ffffff;
       --text-secondary: #b0b0b0;
+      --accent-purple: #8b5cf6;
+      --accent-blue: #3b82f6;
+      --gradient-primary: linear-gradient(135deg, var(--primary-gold) 0%, var(--accent-purple) 100%);
+      --gradient-bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      --surface-bg: rgba(255, 255, 255, 0.05);
+      --border-color: rgba(212, 175, 55, 0.2);
+    }
+    
+    /* 浅色主题变量 */
+    :root.light-theme {
+      --primary-gold: #c9a431;
+      --dark-bg: #f8fafc;
+      --dark-surface: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent-purple: #7c3aed;
+      --accent-blue: #2563eb;
+      --gradient-primary: linear-gradient(135deg, var(--primary-gold) 0%, var(--accent-purple) 100%);
+      --gradient-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+      --surface-bg: rgba(0, 0, 0, 0.03);
+      --border-color: rgba(201, 164, 49, 0.3);
     }
     
     * {
@@ -26,10 +50,11 @@
     
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--dark-bg);
+      background: var(--gradient-bg);
       color: var(--text-primary);
       overflow-x: hidden;
       line-height: 1.6;
+      background-attachment: fixed;
     }
     
     .luxury-font {
@@ -40,6 +65,12 @@
     .premium-text {
       position: relative;
       color: var(--primary-gold);
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: gradientShift 3s ease-in-out infinite;
     }
     
     .premium-text::after {
@@ -66,6 +97,11 @@
     @keyframes shimmer {
       0% { background-position: 100% 0; }
       100% { background-position: -100% 0; }
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     
     /* 灵动岛 */
@@ -257,10 +293,15 @@
       left: 0;
       right: 0;
       z-index: 100;
-      background: rgba(10, 10, 10, 0.9);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
       transition: all 0.3s ease;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .light-theme .navbar {
+      background: rgba(248, 250, 252, 0.9);
     }
     
     .navbar.scrolled {
@@ -274,6 +315,30 @@
       padding: 1.5rem 2rem;
       max-width: 1400px;
       margin: 0 auto;
+      gap: 2rem;
+    }
+    
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .theme-toggle-btn {
+      background: var(--surface-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+    
+    .theme-toggle-btn:hover {
+      background: var(--primary-gold);
+      color: var(--dark-bg);
+      transform: scale(1.1);
     }
     
     .logo {
@@ -375,12 +440,14 @@
     
     .feature-card {
       padding: 3rem 2rem;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      border-radius: 0.5rem;
+      background: var(--surface-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
     
     .feature-card::before {
@@ -473,7 +540,7 @@
       gap: 0.5rem;
       padding: 1rem 2rem;
       background: transparent;
-      border: 2px solid var(--primary-gold);
+      border: 2px solid transparent;
       color: var(--primary-gold);
       font-size: 1rem;
       font-weight: 500;
@@ -482,6 +549,8 @@
       text-decoration: none;
       position: relative;
       overflow: hidden;
+      background: linear-gradient(var(--dark-bg), var(--dark-bg)) padding-box,
+                  var(--gradient-primary) border-box;
     }
     
     .luxury-btn::before {
@@ -634,6 +703,33 @@
       to { transform: rotate(360deg); }
     }
     
+    /* 反馈提示样式 */
+    .feedback {
+      text-align: center;
+      margin: 1rem 0;
+      min-height: 30px;
+      color: var(--primary-gold);
+      transition: all 0.3s ease;
+    }
+    
+    .feedback.correct {
+      background: rgba(72, 187, 120, 0.1);
+      border: 1px solid rgba(72, 187, 120, 0.3);
+      color: #48bb78;
+    }
+    
+    .feedback.incorrect {
+      background: rgba(245, 101, 101, 0.1);
+      border: 1px solid rgba(245, 101, 101, 0.3);
+      color: #f56565;
+    }
+    
+    .feedback.warning {
+      background: rgba(246, 178, 77, 0.1);
+      border: 1px solid rgba(246, 178, 77, 0.3);
+      color: #f6b24d;
+    }
+    
     /* 音频可视化 */
     .audio-visualizer {
       display: flex;
@@ -667,10 +763,13 @@
       <div class="logo">LyricType</div>
       <ul class="nav-links">
         <li><a href="#features">特性</a></li>
-        <li><a href="#showcase">产品</a></li>
-        <li><a href="#experience">体验</a></li>
-        <li><a href="#about">关于</a></li>
+        <li><a href="#experience">开始体验</a></li>
       </ul>
+      <div class="nav-controls">
+        <button id="themeToggle" class="theme-toggle-btn" title="切换主题">
+          <i class="fa fa-moon-o"></i>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -702,7 +801,6 @@
         <i class="fa fa-arrow-right"></i>
       </a>
     </div>
-    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/363a3e5d641a487383c00d24850529f0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078466&x-signature=eQEgBxiUHFZF0bdJ2yi3FdMHMRM%3D" alt="LyricType App" class="hero-image" id="heroImage">
   </section>
 
   <!-- 特性区域 -->
@@ -756,68 +854,7 @@
     </div>
   </section>
 
-  <!-- 产品展示区域 -->
-  <section id="showcase" class="product-showcase">
-    <div class="container">
-      <div class="showcase-content">
-        <div class="showcase-text">
-          <h2 class="showcase-title premium-text" data-text="简奢体验">简奢体验</h2>
-          <p class="showcase-description">
-            LyricType 不仅仅是一款歌词学习应用，更是一种生活态度的体现。我们追求极简与奢华的完美平衡，通过精心设计的界面和流畅的交互，为您带来无与伦比的学习体验。
-          </p>
-          <p class="showcase-description">
-            每一个细节都经过精心打磨，从字体选择到色彩搭配，从动画效果到交互反馈，都体现了我们对品质的极致追求。
-          </p>
-          <button class="luxury-btn" onclick="openDrawer('productDetails')">
-            了解更多
-            <i class="fa fa-arrow-right"></i>
-          </button>
-        </div>
-        <div class="showcase-image">
-          <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/422a80097cdd4208abff21e0af221e43~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078477&x-signature=WXntU8NmXhcmgoH0P6B3Z0PiMs8%3D" alt="LyricType Interface">
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- 固定与滚动混合布局 -->
-  <section class="fixed-scroll-layout">
-    <!-- 左侧滚动内容区 -->
-    <div class="scroll-content">
-      <div class="h-screen flex flex-col justify-center p-6" data-section="1">
-        <h3 class="text-3xl font-bold mb-4 luxury-font premium-text" data-text="智能学习">智能学习</h3>
-        <p class="text-gray-300 text-lg">
-          基于先进的算法，为您提供个性化的学习建议，智能调整学习难度，让您的学习效率提升300%。
-        </p>
-      </div>
-    
-      <div class="h-screen flex flex-col justify-center p-6" data-section="2">
-        <h3 class="text-3xl font-bold mb-4 luxury-font premium-text" data-text="沉浸式体验">沉浸式体验</h3>
-        <p class="text-gray-300 text-lg">
-          精心设计的音频可视化效果，配合流畅的动画过渡，让您仿佛置身于音乐的海洋中，享受学习的乐趣。
-        </p>
-      </div>
-    
-      <div class="h-screen flex flex-col justify-center p-6" data-section="3">
-        <h3 class="text-3xl font-bold mb-4 luxury-font premium-text" data-text="专业工具">专业工具</h3>
-        <p class="text-gray-300 text-lg">
-          提供专业的歌词编辑、时间轴调整、音频控制等功能，满足您的各种学习需求，成为您音乐学习的得力助手。
-        </p>
-      </div>
-    </div>
-
-    <!-- 右侧固定内容区 -->
-    <div class="fixed-content">
-      <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/363a3e5d641a487383c00d24850529f0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078466&x-signature=eQEgBxiUHFZF0bdJ2yi3FdMHMRM%3D" class="fixed-image active" data-image="1">
-      <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/422a80097cdd4208abff21e0af221e43~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078477&x-signature=WXntU8NmXhcmgoH0P6B3Z0PiMs8%3D" class="fixed-image" data-image="2">
-      <div class="fixed-image" data-image="3" style="background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 70%); display: flex; align-items: center; justify-content: center;">
-        <div class="text-center">
-          <div class="text-6xl mb-4">🎵</div>
-          <div class="text-2xl luxury-font premium-text" data-text="专业品质">专业品质</div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- 体验区域 -->
   <section id="experience" class="features">
@@ -825,7 +862,7 @@
       <h2 class="section-title luxury-font premium-text" data-text="开始体验">开始体验</h2>
       <div class="max-w-4xl mx-auto">
         <!-- 文件上传/模板加载区域 -->
-        <div id="dropZone" class="upload-area" style="border: 2px dashed rgba(212, 175, 55, 0.3); padding: 4rem 2rem; text-align: center; margin-bottom: 3rem; transition: all 0.3s ease; cursor: pointer; border-radius: 0.5rem;">
+        <div id="dropZone" class="upload-area" style="border: 2px dashed var(--border-color); padding: 4rem 2rem; text-align: center; margin-bottom: 3rem; transition: all 0.3s ease; cursor: pointer; border-radius: 0.5rem; background: var(--surface-bg); backdrop-filter: blur(10px);">
           <h3 class="text-2xl font-bold mb-2 luxury-font premium-text" data-text="加载模板文件">加载模板文件</h3>
           <p class="feedback warning mb-4" id="templateTip" style="color: var(--text-secondary);">正在检测GitHub模板文件...</p>
           <!-- 模板选择器动态生成 -->
@@ -845,10 +882,11 @@
         
         <!-- 歌词显示区域 -->
         <div class="lyric-display" style="margin: 3rem 0; text-align: center;">
-          <div class="lyric-text" id="lyricBox" style="font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; line-height: 1.6; margin-bottom: 2rem; min-height: 100px; color: var(--primary-gold); font-family: 'Times New Roman', serif;">
+          <div class="lyric-text" id="lyricBox" style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; line-height: 1.8; margin-bottom: 2rem; min-height: 120px; color: var(--primary-gold); font-family: 'Times New Roman', serif; text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); transition: all 0.3s ease; padding: 1rem; border-radius: 1rem; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);">
             等待模板加载/文件上传...
           </div>
-          <div class="lyric-translation" id="transBox" style="font-size: 1.3rem; color: var(--text-secondary); font-weight: 300; min-height: 50px; font-family: 'Times New Roman', serif;"></div>
+          <div class="lyric-translation" id="transBox" style="font-size: 1.4rem; color: var(--text-secondary); font-weight: 300; min-height: 60px; font-family: 'Times New Roman', serif; margin-top: 1rem; padding: 1rem; border-radius: 1rem; background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(5px);">
+          </div>
         </div>
         
         <!-- 输入区域 -->
@@ -865,7 +903,7 @@
             />
             <div id="highlightLayer" class="absolute -top-[100px] left-0 right-0 flex items-center px-6 pointer-events-none" style="font-size: 1.4rem; font-family: 'Times New Roman', serif; padding: 0 1.5rem;"></div>
           </div>
-          <div class="feedback" id="feedback" style="text-align: center; margin: 1rem 0; min-height: 30px; color: var(--primary-gold);"></div>
+          <div class="feedback" id="feedback" style="text-align: center; margin: 1.5rem 0; min-height: 40px; color: var(--primary-gold); font-size: 1.1rem; font-weight: 500; padding: 1rem; border-radius: 0.5rem; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.2); transition: all 0.3s ease;"></div>
         </div>
         
         <!-- 控制按钮 -->
@@ -887,28 +925,7 @@
     </div>
   </section>
 
-  <!-- 关于区域 -->
-  <section id="about" class="product-showcase">
-    <div class="container">
-      <div class="showcase-content">
-        <div class="showcase-image">
-          <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/363a3e5d641a487383c00d24850529f0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026012712004841C88D27D197841BFF2F&rrcfp=f06b921b&x-expires=1772078466&x-signature=eQEgBxiUHFZF0bdJ2yi3FdMHMRM%3D" alt="LyricType App">
-        </div>
-        <div class="showcase-text">
-          <h2 class="showcase-title premium-text" data-text="关于 LyricType">关于 LyricType</h2>
-          <p class="showcase-description">
-            LyricType 诞生于对音乐和学习的热爱。我们相信，学习歌词不应该是枯燥的记忆过程，而应该是一种享受音乐的方式。
-          </p>
-          <p class="showcase-description">
-            通过创新的技术和精心的设计，我们打造了这款简奢风格的歌词学习应用，旨在为音乐爱好者提供最好的学习体验。
-          </p>
-          <p class="showcase-description">
-            无论您是音乐初学者，还是想要提升语言能力的学习者，LyricType 都能满足您的需求，让学习变得更加高效和有趣。
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
   <!-- 页脚 -->
   <footer class="footer">
@@ -1044,6 +1061,9 @@
     const islandText = document.getElementById('island-text');
     const islandIcon = document.getElementById('island-icon');
     const island = document.getElementById('dynamic-island');
+    
+    // 主题控制元素
+    const themeToggle = document.getElementById('themeToggle');
 
     /* ========== IndexedDB 初始化 ========== */
     const req = indexedDB.open(DB_NAME, 1);
@@ -1064,6 +1084,39 @@
       templateTip.textContent = '缓存初始化失败，将检测GitHub模板';
       checkAllTemplates();
     };
+
+    /* ========== 主题切换功能 ========== */
+    function initTheme() {
+      // 从localStorage加载保存的主题
+      const savedTheme = localStorage.getItem('lyrictype-theme') || 'dark';
+      document.documentElement.classList.toggle('light-theme', savedTheme === 'light');
+      
+      // 更新主题切换按钮图标
+      updateThemeToggleIcon();
+      
+      // 设置主题切换按钮事件监听器
+      themeToggle.addEventListener('click', toggleTheme);
+    }
+    
+    function toggleTheme() {
+      const isLightTheme = document.documentElement.classList.toggle('light-theme');
+      localStorage.setItem('lyrictype-theme', isLightTheme ? 'light' : 'dark');
+      updateThemeToggleIcon();
+      
+      // 更新灵动岛提示
+      updateIsland(`已切换到${isLightTheme ? '浅色' : '深色'}主题`, 'fa-paint-brush');
+      
+      // 重新初始化粒子效果以适应新主题
+      setTimeout(() => {
+        setupParticles();
+      }, 300);
+    }
+    
+    function updateThemeToggleIcon() {
+      const isLightTheme = document.documentElement.classList.contains('light-theme');
+      themeToggle.innerHTML = `<i class="fa fa-${isLightTheme ? 'sun-o' : 'moon-o'}"></i>`;
+      themeToggle.title = `切换到${isLightTheme ? '深色' : '浅色'}主题`;
+    }
 
     /* ========== 页面动效初始化 ========== */
     function setupParticles() {
@@ -1312,7 +1365,7 @@
       for (let i = 1; i <= TEMPLATE_COUNT; i++) {
         templateExists[i] = await checkTemplate(i);
       }
-      // 生成模板选择按钮
+      // 生成模板选择器按钮
       generateTemplateSelector();
       // 统计存在的模板数量
       const existCount = templateExists.filter(Boolean).length;
@@ -1612,7 +1665,11 @@
           feedback.className = 'feedback';
           showLyric();
         }, 1800);
-      } else if (user.length > correct.length) {
+      }
+      // 去除输入文字过长自动删除的功能
+      // 注释掉以下代码块
+      /*
+      else if (user.length > correct.length) {
         feedback.textContent = '✗ 输入过长，请重试';
         feedback.className = 'feedback incorrect';
         this.value = '';
@@ -1622,6 +1679,7 @@
           feedback.className = 'feedback';
         }, 2000);
       }
+      */
     });
     
     // 更新字符高亮
@@ -1758,6 +1816,7 @@
       setupParticles();
       setupScrollAnimations();
       setupFixedScrollLayout();
+      initTheme();
       
       // 初始化质感文字
       document.querySelectorAll('.premium-text').forEach(el => {
