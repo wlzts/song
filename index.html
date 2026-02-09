@@ -11,7 +11,6 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --primary-gold: #d4af37;
@@ -680,7 +679,6 @@
       }
     }
   </style>
-<base target="_blank">
 </head>
 <body>
   <div id="root"></div>
@@ -1148,7 +1146,13 @@
                 ))}
               </div>
               
-              <a href="#experience" className="luxury-btn">
+              <a href="#experience" className="luxury-btn" onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById('experience');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}>
                 <Icons.Play /> 开始体验
               </a>
             </div>
