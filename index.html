@@ -26,6 +26,77 @@
       --border-color: rgba(212, 175, 55, 0.2);
     }
 
+    /* 主题样式 */
+    :root[data-theme="lemon"] {
+      --primary-gold: #e6b422;
+      --dark-bg: #fff8e1;
+      --dark-surface: #fffde7;
+      --text-primary: #5d4037;
+      --text-secondary: #8d6e63;
+      --accent-purple: #ba68c8;
+      --accent-blue: #4fc3f7;
+      --gradient-primary: linear-gradient(135deg, #e6b422 0%, #ff8a65 100%);
+      --gradient-bg: linear-gradient(135deg, #fff8e1 0%, #fff3e0 50%, #ffe0b2 100%);
+      --surface-bg: rgba(93, 64, 55, 0.03);
+      --border-color: rgba(230, 180, 34, 0.3);
+    }
+
+    :root[data-theme="stars"] {
+      --primary-gold: #ffd700;
+      --dark-bg: #0a0a23;
+      --dark-surface: #1a1a4e;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3ff;
+      --accent-purple: #9c27b0;
+      --accent-blue: #03a9f4;
+      --gradient-primary: linear-gradient(135deg, #ffd700 0%, #9c27b0 100%);
+      --gradient-bg: linear-gradient(135deg, #0a0a23 0%, #1a1a4e 50%, #283593 100%);
+      --surface-bg: rgba(255, 255, 255, 0.05);
+      --border-color: rgba(255, 215, 0, 0.3);
+    }
+
+    :root[data-theme="journey"] {
+      --primary-gold: #d4a76a;
+      --dark-bg: #f5f5dc;
+      --dark-surface: #fafafa;
+      --text-primary: #5d4037;
+      --text-secondary: #8d6e63;
+      --accent-purple: #8d6e63;
+      --accent-blue: #607d8b;
+      --gradient-primary: linear-gradient(135deg, #d4a76a 0%, #8d6e63 100%);
+      --gradient-bg: linear-gradient(135deg, #f5f5dc 0%, #fff3e0 50%, #ffe0b2 100%);
+      --surface-bg: rgba(93, 64, 55, 0.03);
+      --border-color: rgba(212, 167, 106, 0.3);
+    }
+
+    :root[data-theme="love"] {
+      --primary-gold: #ff4081;
+      --dark-bg: #fce4ec;
+      --dark-surface: #f8bbd0;
+      --text-primary: #880e4f;
+      --text-secondary: #c2185b;
+      --accent-purple: #9c27b0;
+      --accent-blue: #2196f3;
+      --gradient-primary: linear-gradient(135deg, #ff4081 0%, #9c27b0 100%);
+      --gradient-bg: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
+      --surface-bg: rgba(136, 14, 79, 0.03);
+      --border-color: rgba(255, 64, 129, 0.3);
+    }
+
+    :root[data-theme="chinese"] {
+      --primary-gold: #d4af37;
+      --dark-bg: #f9f3e9;
+      --dark-surface: #f5efe6;
+      --text-primary: #8b4513;
+      --text-secondary: #a0522d;
+      --accent-purple: #9c27b0;
+      --accent-blue: #03a9f4;
+      --gradient-primary: linear-gradient(135deg, #d4af37 0%, #8b4513 100%);
+      --gradient-bg: linear-gradient(135deg, #f9f3e9 0%, #f5efe6 50%, #e8d8c3 100%);
+      --surface-bg: rgba(139, 69, 19, 0.03);
+      --border-color: rgba(212, 175, 55, 0.3);
+    }
+
     :root.light-theme {
       --primary-gold: #c9a431;
       --dark-bg: #f8fafc;
@@ -802,6 +873,15 @@
       );
     }
 
+    // 模板数据
+    const TEMPLATE_DATA = [
+      { id: 1, name: 'Lemon Tree', artist: 'Fool\'s Garden', image: 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/0e591a107eb949249c243cd8d5d64610~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026020916265687B611946780141B0DB2&rrcfp=f06b921b&x-expires=1773217629&x-signature=7F1LrqejzBFOhFAr029Lw8jNYCY%3D', theme: 'lemon' },
+      { id: 2, name: 'Counting Stars', artist: 'OneRepublic', image: 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/c7bba3795f704845acd97213f433743c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026020916265687B611946780141B0DB2&rrcfp=f06b921b&x-expires=1773217640&x-signature=26hb2%2FgzQmJiyDahbq1nhytWCeE%3D', theme: 'stars' },
+      { id: 3, name: '500 Miles', artist: 'The Proclaimers', image: 'https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/ea29b6621cdd4b2ca66b1dc146647e0c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026020916265687B611946780141B0DB2&rrcfp=f06b921b&x-expires=1773217660&x-signature=ceZ%2FrtL3MKVi8fgoU4Dt6F1GzC8%3D', theme: 'journey' },
+      { id: 4, name: 'Love Story', artist: 'Taylor Swift', image: 'https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/6a4f5872e25d4c5faa9d261a3b6a57e5~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026020916265687B611946780141B0DB2&rrcfp=f06b921b&x-expires=1773217683&x-signature=DGQ0Dt5DSuAmaVAkiDnZxNqUv4c%3D', theme: 'love' },
+      { id: 5, name: '安和桥', artist: '宋冬野', image: 'https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/a6ed7cddb9264f6f842d2a69a1993f0c~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=2026020916265687B611946780141B0DB2&rrcfp=f06b921b&x-expires=1773217697&x-signature=PQXLTwGJF2F%2BH7%2Fhz%2BJ7YX6P6zo%3D', theme: 'chinese' }
+    ];
+
     // 主应用
     function App() {
       const TEMPLATE_COUNT = 5;
@@ -818,6 +898,8 @@
       const [feedback, setFeedback] = useState({ message: '', type: '' });
       const [showFeedback, setShowFeedback] = useState(false);
       const [island, setIsland] = useState({ text: '欢迎使用 LyricType', icon: 'Music' });
+      const [currentTheme, setCurrentTheme] = useState('');
+      const [currentTemplateData, setCurrentTemplateData] = useState(null);
 
       const audioRef = useRef(null);
       const inputRef = useRef(null);
@@ -900,11 +982,19 @@
       const loadTemplate = async (num) => {
         if (!templateExists[num]) return;
         
+        const templateData = TEMPLATE_DATA.find(t => t.id === num);
+        if (!templateData) return;
+        
         setCurrentTemplate(num);
+        setCurrentTemplateData(templateData);
         setLrcData([]);
         setCurrentIndex(0);
         setUserInput('');
         setIsPlaying(false);
+        
+        // 切换主题
+        setCurrentTheme(templateData.theme);
+        document.documentElement.setAttribute('data-theme', templateData.theme);
         
         const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]+$/, '');
         
@@ -922,8 +1012,8 @@
             audioRef.current.load();
           }
           
-          updateIsland(`模板 ${num} 已加载`, 'Check');
-          showFeedbackMsg(`模板 ${num} 加载成功`, 'correct');
+          updateIsland(`${templateData.name} - ${templateData.artist}`, 'Check');
+          showFeedbackMsg(`《${templateData.name}》加载成功`, 'correct');
         } catch (err) {
           updateIsland('加载失败', 'AlertCircle');
           showFeedbackMsg(err.message, 'incorrect');
@@ -948,6 +1038,9 @@
         }
         
         setCurrentTemplate(0);
+        setCurrentTemplateData(null);
+        setCurrentTheme('');
+        document.documentElement.removeAttribute('data-theme');
         
         Promise.all([lrcFile.text(), audioFile.arrayBuffer()]).then(([lrcText, audioBuf]) => {
           const parsed = parseLRC(lrcText);
@@ -1173,14 +1266,15 @@
                 </div>
                 
                 <div className="template-selector">
-                  {Array.from({ length: TEMPLATE_COUNT }, (_, i) => i + 1).map(num => (
+                  {TEMPLATE_DATA.map(template => (
                     <button
-                      key={num}
-                      onClick={() => loadTemplate(num)}
-                      disabled={!templateExists[num]}
-                      className={`template-btn ${templateExists[num] ? 'available' : 'unavailable'} ${currentTemplate === num ? 'active' : ''}`}
+                      key={template.id}
+                      onClick={() => loadTemplate(template.id)}
+                      disabled={!templateExists[template.id]}
+                      className={`template-btn ${templateExists[template.id] ? 'available' : 'unavailable'} ${currentTemplate === template.id ? 'active' : ''}`}
+                      title={`${template.name} - ${template.artist}`}
                     >
-                      模板 {num}
+                      {template.name}
                     </button>
                   ))}
                 </div>
@@ -1204,6 +1298,31 @@
                 </div>
               </div>
               
+              {/* 歌曲图片显示 */}
+              {currentTemplateData && (
+                <div className="song-image-container" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                  <img 
+                    src={currentTemplateData.image} 
+                    alt={`${currentTemplateData.name} - ${currentTemplateData.artist}`}
+                    style={{ 
+                      maxWidth: '100%', 
+                      maxHeight: '300px', 
+                      borderRadius: '1rem',
+                      boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                      border: '2px solid var(--border-color)'
+                    }}
+                  />
+                  <div style={{ marginTop: '1rem' }}>
+                    <h3 style={{ color: 'var(--text-primary)', margin: '0.5rem 0', fontFamily: 'Playfair Display, serif' }}>
+                      {currentTemplateData.name}
+                    </h3>
+                    <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                      {currentTemplateData.artist}
+                    </p>
+                  </div>
+                </div>
+              )}
+              
               {/* 歌词显示 */}
               <div className="lyric-display">
                 <div className="lyric-text">
@@ -1226,6 +1345,10 @@
                   placeholder="在此输入歌词..."
                   disabled={!isPlaying || currentIndex >= lrcData.length}
                   className="minimal-input"
+                  spellCheck="false"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
                 />
                 <div className="char-highlights">{renderHighlights()}</div>
               </div>
