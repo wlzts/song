@@ -198,6 +198,160 @@
       color: var(--dark-bg);
     }
 
+    /* 导航栏扩展样式 */
+    .navbar-content.editing-breathing-bg {
+      animation: breathing 3s ease-in-out infinite;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .template-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .template-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .template-artist {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-btn {
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background: var(--surface-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--primary-gold);
+      color: var(--dark-bg);
+      transform: translateY(-2px);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* 主题导航栏样式 */
+    .navbar.theme-lemon {
+      background: linear-gradient(135deg, rgba(255, 248, 225, 0.9), rgba(255, 222, 173, 0.9));
+      border-bottom-color: #ffd700;
+    }
+
+    .navbar.theme-stars {
+      background: linear-gradient(135deg, rgba(20, 20, 40, 0.95), rgba(30, 30, 60, 0.95));
+      border-bottom-color: #8a2be2;
+    }
+
+    .navbar.theme-miles {
+      background: linear-gradient(135deg, rgba(245, 245, 245, 0.9), rgba(220, 220, 220, 0.9));
+      border-bottom-color: #654321;
+    }
+
+    .navbar.theme-love {
+      background: linear-gradient(135deg, rgba(255, 220, 220, 0.9), rgba(255, 182, 193, 0.9));
+      border-bottom-color: #ff69b4;
+    }
+
+    .navbar.theme-anhe {
+      background: linear-gradient(135deg, rgba(240, 248, 255, 0.9), rgba(224, 255, 255, 0.9));
+      border-bottom-color: #1e90ff;
+    }
+
+    .navbar.theme-lemon .logo,
+    .navbar.theme-lemon .nav-btn,
+    .navbar.theme-lemon .theme-btn {
+      color: #ffd700;
+      border-color: rgba(255, 215, 0, 0.3);
+    }
+
+    .navbar.theme-stars .logo,
+    .navbar.theme-stars .nav-btn,
+    .navbar.theme-stars .theme-btn {
+      color: #8a2be2;
+      border-color: rgba(138, 43, 226, 0.3);
+    }
+
+    .navbar.theme-miles .logo,
+    .navbar.theme-miles .nav-btn,
+    .navbar.theme-miles .theme-btn {
+      color: #654321;
+      border-color: rgba(101, 67, 33, 0.3);
+    }
+
+    .navbar.theme-love .logo,
+    .navbar.theme-love .nav-btn,
+    .navbar.theme-love .theme-btn {
+      color: #ff69b4;
+      border-color: rgba(255, 105, 180, 0.3);
+    }
+
+    .navbar.theme-anhe .logo,
+    .navbar.theme-anhe .nav-btn,
+    .navbar.theme-anhe .theme-btn {
+      color: #1e90ff;
+      border-color: rgba(30, 144, 255, 0.3);
+    }
+
+    .navbar.theme-lemon .nav-btn:hover:not(:disabled),
+    .navbar.theme-lemon .theme-btn:hover {
+      background: #ffd700;
+      color: #000;
+    }
+
+    .navbar.theme-stars .nav-btn:hover:not(:disabled),
+    .navbar.theme-stars .theme-btn:hover {
+      background: #8a2be2;
+      color: #fff;
+    }
+
+    .navbar.theme-miles .nav-btn:hover:not(:disabled),
+    .navbar.theme-miles .theme-btn:hover {
+      background: #654321;
+      color: #fff;
+    }
+
+    .navbar.theme-love .nav-btn:hover:not(:disabled),
+    .navbar.theme-love .theme-btn:hover {
+      background: #ff69b4;
+      color: #fff;
+    }
+
+    .navbar.theme-anhe .nav-btn:hover:not(:disabled),
+    .navbar.theme-anhe .theme-btn:hover {
+      background: #1e90ff;
+      color: #fff;
+    }
+
     /* 英雄区域 */
     .hero {
       min-height: 100vh;
@@ -484,6 +638,10 @@
     /* 输入区域 */
     .input-area {
       margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
 
     .minimal-input {
@@ -511,10 +669,11 @@
 
     /* 字符高亮 */
     .char-highlights {
-      margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
       text-align: center;
       font-size: 1.1rem;
       min-height: 30px;
+      width: 100%;
     }
 
     .char-highlight {
@@ -858,6 +1017,694 @@
       return <canvas ref={canvasRef} id="particles-canvas" />;
     }
 
+    // 柠檬树落叶效果组件
+    function LemonTreeEffect() {
+      const canvasRef = useRef(null);
+      const animationRef = useRef(null);
+      const leavesRef = useRef([]);
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const resize = () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        };
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 创建落叶
+        const createLeaves = () => {
+          const leaves = [];
+          const leafShapes = [
+            // 圆形柠檬
+            (ctx, x, y, size, rotation) => {
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.rotate(rotation);
+              ctx.beginPath();
+              ctx.arc(0, 0, size, 0, Math.PI * 2);
+              ctx.fillStyle = `rgb(255, 215, 0)`;
+              ctx.fill();
+              ctx.strokeStyle = `rgb(255, 193, 7)`;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+              ctx.restore();
+            },
+            // 椭圆形叶子
+            (ctx, x, y, size, rotation) => {
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.rotate(rotation);
+              ctx.beginPath();
+              ctx.ellipse(0, 0, size * 1.5, size, 0, 0, Math.PI * 2);
+              ctx.fillStyle = `rgb(144, 238, 144)`;
+              ctx.fill();
+              ctx.strokeStyle = `rgb(102, 205, 170)`;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+              ctx.restore();
+            }
+          ];
+
+          for (let i = 0; i < 20; i++) {
+            leaves.push({
+              x: Math.random() * canvas.width,
+              y: -50,
+              size: Math.random() * 15 + 10,
+              speedX: (Math.random() - 0.5) * 2,
+              speedY: Math.random() * 3 + 2,
+              rotation: Math.random() * Math.PI * 2,
+              rotationSpeed: (Math.random() - 0.5) * 0.1,
+              shape: leafShapes[Math.floor(Math.random() * leafShapes.length)],
+              opacity: Math.random() * 0.7 + 0.3
+            });
+          }
+          
+          return leaves;
+        };
+
+        leavesRef.current = createLeaves();
+
+        // 动画循环
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          leavesRef.current.forEach(leaf => {
+            leaf.x += leaf.speedX;
+            leaf.y += leaf.speedY;
+            leaf.rotation += leaf.rotationSpeed;
+
+            // 重置落叶
+            if (leaf.y > canvas.height + 50) {
+              leaf.y = -50;
+              leaf.x = Math.random() * canvas.width;
+              leaf.opacity = Math.random() * 0.7 + 0.3;
+            }
+
+            // 绘制落叶
+            ctx.save();
+            ctx.globalAlpha = leaf.opacity;
+            leaf.shape(ctx, leaf.x, leaf.y, leaf.size, leaf.rotation);
+            ctx.restore();
+          });
+
+          animationRef.current = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        return () => {
+          window.removeEventListener('resize', resize);
+          cancelAnimationFrame(animationRef.current);
+        };
+      }, []);
+
+      return <canvas ref={canvasRef} className="effect-canvas" />;
+    }
+
+    // 星空闪烁效果组件
+    function StarsEffect() {
+      const canvasRef = useRef(null);
+      const animationRef = useRef(null);
+      const starsRef = useRef([]);
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const resize = () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        };
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 创建星星
+        const createStars = () => {
+          const stars = [];
+          const count = Math.floor((canvas.width * canvas.height) / 2000);
+          
+          for (let i = 0; i < count; i++) {
+            stars.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              size: Math.random() * 3 + 1,
+              opacity: Math.random() * 0.8 + 0.2,
+              pulseSpeed: Math.random() * 0.03 + 0.01,
+              pulseDirection: Math.random() > 0.5 ? 1 : -1,
+              twinkleRate: Math.random() * 0.05 + 0.01
+            });
+          }
+          
+          return stars;
+        };
+
+        starsRef.current = createStars();
+
+        // 动画循环
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          starsRef.current.forEach(star => {
+            // 星星闪烁效果
+            star.opacity += star.pulseSpeed * star.pulseDirection;
+            
+            if (star.opacity >= 1) {
+              star.opacity = 1;
+              star.pulseDirection = -1;
+            } else if (star.opacity <= 0.2) {
+              star.opacity = 0.2;
+              star.pulseDirection = 1;
+            }
+
+            // 随机闪烁
+            if (Math.random() < star.twinkleRate) {
+              star.pulseDirection *= -1;
+            }
+
+            // 绘制星星
+            ctx.save();
+            ctx.globalAlpha = star.opacity;
+            
+            // 绘制星形
+            ctx.beginPath();
+            const spikes = 5;
+            const outerRadius = star.size;
+            const innerRadius = star.size * 0.5;
+            
+            for (let i = 0; i < spikes * 2; i++) {
+              const radius = i % 2 === 0 ? outerRadius : innerRadius;
+              const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
+              const x = star.x + Math.cos(angle) * radius;
+              const y = star.y + Math.sin(angle) * radius;
+              
+              if (i === 0) {
+                ctx.moveTo(x, y);
+              } else {
+                ctx.lineTo(x, y);
+              }
+            }
+            
+            ctx.closePath();
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+            
+            // 光晕效果
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
+            const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 2);
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity * 0.5})`);
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            ctx.restore();
+          });
+
+          animationRef.current = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        return () => {
+          window.removeEventListener('resize', resize);
+          cancelAnimationFrame(animationRef.current);
+        };
+      }, []);
+
+      return <canvas ref={canvasRef} className="effect-canvas" />;
+    }
+
+    // 500英里沿途风景效果组件
+    function MilesEffect() {
+      const canvasRef = useRef(null);
+      const animationRef = useRef(null);
+      const elementsRef = useRef({
+        hills: [],
+        trees: [],
+        road: {
+          progress: 0
+        }
+      });
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const resize = () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        };
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 创建风景元素
+        const createLandscape = () => {
+          const hills = [];
+          const trees = [];
+
+          // 创建山丘
+          for (let i = 0; i < 5; i++) {
+            hills.push({
+              x: i * canvas.width / 4,
+              y: canvas.height * (0.6 + Math.random() * 0.2),
+              width: canvas.width / 3 + Math.random() * canvas.width / 6,
+              height: canvas.height * (0.2 + Math.random() * 0.2),
+              color: `rgb(${100 + Math.random() * 50}, ${180 + Math.random() * 50}, ${100 + Math.random() * 30})`,
+              speed: Math.random() * 0.5 + 0.5
+            });
+          }
+
+          // 创建树木
+          for (let i = 0; i < 20; i++) {
+            trees.push({
+              x: Math.random() * canvas.width * 2,
+              y: canvas.height * 0.7 + Math.random() * canvas.height * 0.1,
+              height: canvas.height * (0.1 + Math.random() * 0.2),
+              type: Math.random() > 0.5 ? 'pine' : 'deciduous',
+              speed: Math.random() * 1 + 1.5
+            });
+          }
+
+          return { hills, trees };
+        };
+
+        const landscape = createLandscape();
+        elementsRef.current.hills = landscape.hills;
+        elementsRef.current.trees = landscape.trees;
+
+        // 绘制山丘
+        const drawHill = (hill) => {
+          ctx.beginPath();
+          ctx.moveTo(hill.x, canvas.height);
+          ctx.quadraticCurveTo(
+            hill.x + hill.width / 2,
+            hill.y - hill.height,
+            hill.x + hill.width,
+            canvas.height
+          );
+          ctx.closePath();
+          ctx.fillStyle = hill.color;
+          ctx.fill();
+        };
+
+        // 绘制树木
+        const drawTree = (tree) => {
+          ctx.save();
+          ctx.translate(tree.x, tree.y);
+          
+          // 树干
+          ctx.fillStyle = '#8B4513';
+          ctx.fillRect(-5, 0, 10, -tree.height * 0.3);
+          
+          // 树冠
+          if (tree.type === 'pine') {
+            // 松树
+            ctx.fillStyle = '#228B22';
+            for (let i = 0; i < 3; i++) {
+              ctx.beginPath();
+              ctx.moveTo(-tree.height * 0.2, -tree.height * 0.3 - i * tree.height * 0.2);
+              ctx.lineTo(0, -tree.height * 0.3 - i * tree.height * 0.2 - tree.height * 0.2);
+              ctx.lineTo(tree.height * 0.2, -tree.height * 0.3 - i * tree.height * 0.2);
+              ctx.closePath();
+              ctx.fill();
+            }
+          } else {
+            // 阔叶树
+            ctx.fillStyle = '#32CD32';
+            ctx.beginPath();
+            ctx.arc(0, -tree.height * 0.5, tree.height * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          
+          ctx.restore();
+        };
+
+        // 动画循环
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          // 绘制天空
+          const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.7);
+          skyGradient.addColorStop(0, '#87CEEB');
+          skyGradient.addColorStop(1, '#B0E0E6');
+          ctx.fillStyle = skyGradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height * 0.7);
+
+          // 绘制山丘
+          elementsRef.current.hills.forEach(hill => {
+            hill.x -= hill.speed;
+            if (hill.x + hill.width < 0) {
+              hill.x = canvas.width;
+            }
+            drawHill(hill);
+          });
+
+          // 绘制道路
+          ctx.fillStyle = '#333';
+          ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+          
+          // 道路分隔线
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([20, 20]);
+          ctx.lineDashOffset = -elementsRef.current.road.progress;
+          ctx.beginPath();
+          ctx.moveTo(0, canvas.height * 0.85);
+          ctx.lineTo(canvas.width, canvas.height * 0.85);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // 绘制树木
+          elementsRef.current.trees.forEach(tree => {
+            tree.x -= tree.speed;
+            if (tree.x < -100) {
+              tree.x = canvas.width + 100;
+              tree.y = canvas.height * 0.7 + Math.random() * canvas.height * 0.1;
+            }
+            drawTree(tree);
+          });
+
+          // 更新道路进度
+          elementsRef.current.road.progress += 2;
+
+          animationRef.current = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        return () => {
+          window.removeEventListener('resize', resize);
+          cancelAnimationFrame(animationRef.current);
+        };
+      }, []);
+
+      return <canvas ref={canvasRef} className="effect-canvas" />;
+    }
+
+    // 爱情故事爱心效果组件
+    function LoveStoryEffect() {
+      const canvasRef = useRef(null);
+      const animationRef = useRef(null);
+      const heartsRef = useRef([]);
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const resize = () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        };
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 绘制爱心
+        const drawHeart = (ctx, x, y, size, color, opacity) => {
+          ctx.save();
+          ctx.globalAlpha = opacity;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.bezierCurveTo(x, y - size / 2, x - size / 2, y - size, x - size, y - size / 4);
+          ctx.bezierCurveTo(x - size * 1.5, y + size / 4, x, y + size * 0.75, x, y + size * 0.75);
+          ctx.bezierCurveTo(x, y + size * 0.75, x + size * 1.5, y + size / 4, x + size, y - size / 4);
+          ctx.bezierCurveTo(x + size / 2, y - size, x, y - size / 2, x, y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        };
+
+        // 创建爱心
+        const createHearts = () => {
+          const hearts = [];
+          const colors = ['#FF69B4', '#FF1493', '#C71585', '#DB7093', '#FFB6C1'];
+          
+          for (let i = 0; i < 15; i++) {
+            hearts.push({
+              x: Math.random() * canvas.width,
+              y: canvas.height + 50,
+              size: Math.random() * 30 + 20,
+              speedY: -(Math.random() * 2 + 1),
+              speedX: (Math.random() - 0.5) * 1,
+              rotation: Math.random() * Math.PI * 2,
+              rotationSpeed: (Math.random() - 0.5) * 0.1,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              opacity: Math.random() * 0.6 + 0.4,
+              pulseSize: Math.random() * 0.02 + 0.01,
+              pulseDirection: 1
+            });
+          }
+          
+          return hearts;
+        };
+
+        heartsRef.current = createHearts();
+
+        // 动画循环
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          heartsRef.current.forEach(heart => {
+            heart.y += heart.speedY;
+            heart.x += heart.speedX;
+            heart.rotation += heart.rotationSpeed;
+            
+            // 脉冲效果
+            heart.size += heart.pulseSize * heart.pulseDirection;
+            if (heart.size > 50) {
+              heart.pulseDirection = -1;
+            } else if (heart.size < 15) {
+              heart.pulseDirection = 1;
+            }
+
+            // 重置爱心
+            if (heart.y < -50 || heart.x < -50 || heart.x > canvas.width + 50) {
+              heart.y = canvas.height + 50;
+              heart.x = Math.random() * canvas.width;
+              heart.opacity = Math.random() * 0.6 + 0.4;
+            }
+
+            // 绘制爱心
+            ctx.save();
+            ctx.translate(heart.x, heart.y);
+            ctx.rotate(heart.rotation);
+            drawHeart(ctx, 0, 0, heart.size, heart.color, heart.opacity);
+            ctx.restore();
+          });
+
+          animationRef.current = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        return () => {
+          window.removeEventListener('resize', resize);
+          cancelAnimationFrame(animationRef.current);
+        };
+      }, []);
+
+      return <canvas ref={canvasRef} className="effect-canvas" />;
+    }
+
+    // 安和桥回忆效果组件
+    function AnheBridgeEffect() {
+      const canvasRef = useRef(null);
+      const animationRef = useRef(null);
+      const elementsRef = useRef({
+        lanterns: [],
+        memories: []
+      });
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const resize = () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        };
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 绘制灯笼
+        const drawLantern = (ctx, x, y, size, opacity) => {
+          ctx.save();
+          ctx.globalAlpha = opacity;
+          
+          // 灯笼主体
+          ctx.fillStyle = '#FF4500';
+          ctx.fillRect(x - size / 4, y, size / 2, size);
+          
+          // 灯笼装饰
+          ctx.fillStyle = '#FFD700';
+          for (let i = 0; i < 5; i++) {
+            ctx.fillRect(x - size / 4, y + i * size / 4, size / 2, 2);
+          }
+          
+          // 灯笼顶部和底部
+          ctx.beginPath();
+          ctx.arc(x, y, size / 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#8B0000';
+          ctx.fill();
+          
+          ctx.beginPath();
+          ctx.arc(x, y + size, size / 4, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // 灯笼穗子
+          ctx.beginPath();
+          ctx.moveTo(x, y + size + size / 4);
+          ctx.lineTo(x - size / 8, y + size + size / 2);
+          ctx.lineTo(x + size / 8, y + size + size / 2);
+          ctx.closePath();
+          ctx.fillStyle = '#FFD700';
+          ctx.fill();
+          
+          ctx.restore();
+        };
+
+        // 创建元素
+        const createElements = () => {
+          const lanterns = [];
+          const memories = [];
+
+          // 创建灯笼
+          for (let i = 0; i < 8; i++) {
+            lanterns.push({
+              x: (i + 0.5) * canvas.width / 8,
+              y: canvas.height * 0.3 + Math.sin(i) * 50,
+              size: 40 + Math.random() * 20,
+              swingPhase: Math.random() * Math.PI * 2,
+              opacity: Math.random() * 0.5 + 0.5
+            });
+          }
+
+          // 创建回忆碎片
+          const memoriesTexts = ['回忆', '时光', '童年', '家乡', '思念', '过往', '记忆', '岁月'];
+          for (let i = 0; i < 10; i++) {
+            memories.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              text: memoriesTexts[Math.floor(Math.random() * memoriesTexts.length)],
+              size: Math.random() * 20 + 12,
+              opacity: Math.random() * 0.4 + 0.2,
+              speedX: (Math.random() - 0.5) * 0.5,
+              speedY: (Math.random() - 0.5) * 0.5,
+              rotation: Math.random() * Math.PI * 2,
+              rotationSpeed: (Math.random() - 0.5) * 0.02
+            });
+          }
+
+          return { lanterns, memories };
+        };
+
+        const elements = createElements();
+        elementsRef.current.lanterns = elements.lanterns;
+        elementsRef.current.memories = elements.memories;
+
+        // 动画循环
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          // 绘制背景渐变
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, '#1E3A8A');
+          gradient.addColorStop(1, '#0F172A');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // 绘制灯笼
+          elementsRef.current.lanterns.forEach((lantern, index) => {
+            lantern.swingPhase += 0.02;
+            const swing = Math.sin(lantern.swingPhase) * 10;
+            
+            ctx.save();
+            ctx.translate(lantern.x, lantern.y + swing);
+            drawLantern(ctx, 0, 0, lantern.size, lantern.opacity);
+            ctx.restore();
+          });
+
+          // 绘制回忆文字
+          elementsRef.current.memories.forEach(memory => {
+            memory.x += memory.speedX;
+            memory.y += memory.speedY;
+            memory.rotation += memory.rotationSpeed;
+            
+            // 边界检查
+            if (memory.x < -100 || memory.x > canvas.width + 100) {
+              memory.x = Math.random() * canvas.width;
+            }
+            if (memory.y < -100 || memory.y > canvas.height + 100) {
+              memory.y = Math.random() * canvas.height;
+            }
+
+            // 绘制文字
+            ctx.save();
+            ctx.translate(memory.x, memory.y);
+            ctx.rotate(memory.rotation);
+            ctx.font = `${memory.size}px 'Ma Shan Zheng', cursive`;
+            ctx.fillStyle = `rgba(255, 255, 255, ${memory.opacity})`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(memory.text, 0, 0);
+            ctx.restore();
+          });
+
+          animationRef.current = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        return () => {
+          window.removeEventListener('resize', resize);
+          cancelAnimationFrame(animationRef.current);
+        };
+      }, []);
+
+      return <canvas ref={canvasRef} className="effect-canvas" />;
+    }
+
+    // 主题效果组件
+    function ThemeEffect({ theme }) {
+      switch (theme) {
+        case 'lemon':
+          return <LemonTreeEffect />;
+        case 'stars':
+          return <StarsEffect />;
+        case 'miles':
+          return <MilesEffect />;
+        case 'love':
+          return <LoveStoryEffect />;
+        case 'anhe':
+          return <AnheBridgeEffect />;
+        default:
+          return <ParticleBackground />;
+      }
+    }
+
     // 灵动岛组件
     function DynamicIsland({ text, icon }) {
       const IconComponent = Icons[icon] || Icons.Music;
@@ -1084,39 +1931,103 @@
         updateIsland('练习已暂停', 'Pause');
       };
 
-      // 播放片段
+      // 播放片段 - 优化版
       const playSegment = (startTime, onComplete) => {
-        if (!audioRef.current) return;
+        if (!audioRef.current || !lrcData[currentIndex]) {
+          onComplete?.();
+          return;
+        }
         
         const audio = audioRef.current;
-        if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
+        const currentLine = lrcData[currentIndex];
         
-        let endTime = currentIndex + 1 < lrcData.length 
-          ? lrcData[currentIndex + 1].time 
-          : startTime + 5;
+        // 清除之前的定时器
+        if (checkIntervalRef.current) {
+          clearInterval(checkIntervalRef.current);
+          checkIntervalRef.current = null;
+        }
         
+        // 计算结束时间
+        let endTime;
+        if (currentIndex + 1 < lrcData.length) {
+          // 使用下一行的开始时间作为当前行的结束时间
+          endTime = lrcData[currentIndex + 1].time;
+          // 为了更好的体验，减去一点时间作为缓冲
+          endTime = Math.max(startTime + 0.5, endTime - 0.1);
+        } else {
+          // 如果是最后一行，使用固定时长
+          endTime = startTime + 5;
+        }
+        
+        // 确保时间在有效范围内
+        const duration = audio.duration || 0;
+        if (startTime >= duration) {
+          showFeedbackMsg('音频文件可能不完整', 'warning');
+          onComplete?.();
+          return;
+        }
+        
+        // 设置播放位置
         audio.currentTime = Math.max(0, startTime);
         
-        audio.play().then(() => {
-          checkIntervalRef.current = setInterval(() => {
-            if (audio.currentTime >= endTime) {
-              audio.pause();
-              clearInterval(checkIntervalRef.current);
-              onComplete();
-            }
-          }, 30);
+        // 播放状态标志
+        let isPlaying = false;
+        let hasCalledComplete = false;
+        
+        const complete = () => {
+          if (hasCalledComplete) return;
+          hasCalledComplete = true;
           
-          setTimeout(() => {
-            if (checkIntervalRef.current) {
-              clearInterval(checkIntervalRef.current);
-              if (!audio.paused) audio.pause();
+          // 确保停止播放
+          if (audioRef.current && !audioRef.current.paused) {
+            audioRef.current.pause();
+          }
+          
+          // 清除定时器
+          if (checkIntervalRef.current) {
+            clearInterval(checkIntervalRef.current);
+            checkIntervalRef.current = null;
+          }
+          
+          onComplete?.();
+        };
+        
+        audio.play().then(() => {
+          isPlaying = true;
+          
+          // 使用更精确的时间检查
+          checkIntervalRef.current = setInterval(() => {
+            if (!audioRef.current || !isPlaying) {
+              complete();
+              return;
             }
-          }, (endTime - startTime + 0.1) * 1000);
+            
+            const currentTime = audioRef.current.currentTime;
+            
+            // 检查是否到达结束时间
+            if (currentTime >= endTime) {
+              complete();
+            }
+          }, 20); // 更频繁的检查以提高精度
+          
+          // 设置最大播放时长保护
+          const maxDuration = endTime - startTime + 0.5;
+          setTimeout(() => {
+            if (isPlaying) {
+              complete();
+            }
+          }, maxDuration * 1000);
+          
         }).catch(err => {
+          console.warn('播放失败:', err);
           if (err.name === 'NotAllowedError') {
             showFeedbackMsg('请点击页面后重试', 'warning');
+          } else if (err.name === 'AbortError') {
+            showFeedbackMsg('播放被中止', 'warning');
+          } else {
+            showFeedbackMsg('播放失败，请检查音频文件', 'warning');
           }
-          onComplete();
+          complete();
         });
       };
 
@@ -1214,15 +2125,36 @@
 
       return (
         <>
-          <ParticleBackground />
+          <ThemeEffect theme={currentTheme} />
           
           {/* 导航栏 */}
-          <nav className="navbar">
-            <div className="navbar-content">
-              <div className="logo">LyricType</div>
-              <button className="theme-btn" onClick={toggleTheme} title="切换主题">
-                <ThemeIcon />
-              </button>
+          <nav className={`navbar ${currentTheme ? `theme-${currentTheme}` : ''}`}>
+            <div className="navbar-content editing-breathing-bg">
+              <div className="logo-section">
+                <div className="logo">LyricType</div>
+                {currentTemplateData && (
+                  <div className="template-info">
+                    <span className="template-name">{currentTemplateData.name}</span>
+                    <span className="template-artist">{currentTemplateData.artist}</span>
+                  </div>
+                )}
+              </div>
+              <div className="nav-actions">
+                <button className="nav-btn" onClick={() => {
+                  const element = document.getElementById('experience');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }} title="开始体验">
+                  <Icons.Play />
+                </button>
+                <button className="nav-btn" onClick={exportLyrics} disabled={lrcData.length === 0} title="导出歌词">
+                  <Icons.Download />
+                </button>
+                <button className="theme-btn" onClick={toggleTheme} title="切换主题">
+                  <ThemeIcon />
+                </button>
+              </div>
             </div>
           </nav>
 
@@ -1337,6 +2269,7 @@
               
               {/* 输入区域 */}
               <div className="input-area">
+                <div className="char-highlights">{renderHighlights()}</div>
                 <input
                   ref={inputRef}
                   type="text"
@@ -1350,7 +2283,6 @@
                   autocorrect="off"
                   autocapitalize="off"
                 />
-                <div className="char-highlights">{renderHighlights()}</div>
               </div>
               
               {/* 控制按钮 */}
